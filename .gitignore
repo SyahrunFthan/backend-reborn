@@ -1,0 +1,29 @@
+# Abaikan semua file di dalam folder
+/node_modules
+/public/icons/*
+
+!public/icons
+
+/logs
+*.log
+npm-debug.log*
+
+.env
+
+.DS_Store
+Thumbs.db
+
+/dist
+/build
+
+.vscode/
+.idea/
+
+# Optional: Coverage folder from testing
+/coverage/
+
+.db/
+
+*.swp
+*.swo
+/package-lock.json
