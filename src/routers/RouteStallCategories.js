@@ -14,21 +14,21 @@ const router = express.Router();
 router.post(
   "/create",
   verifyToken,
-  verifyRole(["super admin", "admin"]),
+  verifyRole(["superadmin", "admin"]),
   validateData(schemaStallCategories),
   createStallCategories
 );
 router.patch(
   "/update/:id",
   verifyToken,
-  verifyRole(["super admin", "admin"]),
+  verifyRole(["superadmin", "admin"]),
   validateData(schemaStallCategories),
   updateStallCategories
 );
 router.delete(
   "/delete/:id",
   verifyToken,
-  verifyRole(["super admin", "admin"]),
+  verifyRole(["superadmin", "admin"]),
   deleteCategories
 );
 
