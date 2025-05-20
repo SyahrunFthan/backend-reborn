@@ -17,6 +17,8 @@ import { readFile } from "fs/promises";
 const apiDocs = JSON.parse(
   await readFile(new URL("../api-docs.json", import.meta.url))
 );
+import RouteStall from "./routers/RouteStall.js";
+import RouteRole from "./routers/RouteRole.js";
 
 dotenv.config();
 
@@ -38,9 +40,11 @@ app.use("/public", express.static("public"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(apiDocs));
 
 // End Point API
+app.use("/stall", RouteStall);
 app.use("/stall-categories", RouteStallCategories);
 app.use("/auth", RouteAuth);
 app.use("/incoming-mails", RouteIncomingMails);
+app.use("/role", RouteRole);
 
 app.listen(5001, () => {
   console.log("Server running at port 5001....");

@@ -1,24 +1,19 @@
 import { DataTypes } from "sequelize";
 import db from "../configs/Database.js";
 
-const Residents = db.define(
-  "residents",
+const VillageApparatus = db.define(
+  "village_apparatus",
   {
     uuid: {
       type: DataTypes.STRING,
       primaryKey: true,
-<<<<<<< HEAD
-      autoIncrement: true,
-=======
->>>>>>> b84c2a1db0f40b1a59dd1d2d67669ce38a22052a
     },
     nik: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    no_kk: {
+    name: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     place_birth: {
       type: DataTypes.STRING,
@@ -32,17 +27,26 @@ const Residents = db.define(
     status: {
       type: DataTypes.STRING,
     },
-    religion: {
+    address: {
+      type: DataTypes.TEXT,
+    },
+    phone_number: {
+      type: DataTypes.CHAR(20),
+    },
+    position: {
       type: DataTypes.STRING,
     },
-    education: {
+    img: {
       type: DataTypes.STRING,
     },
-    work: {
+    path_img: {
       type: DataTypes.STRING,
     },
-    age: {
-      type: DataTypes.INTEGER,
+    created_by: {
+      type: DataTypes.STRING,
+    },
+    updated_by: {
+      type: DataTypes.STRING,
     },
   },
   {
@@ -50,4 +54,4 @@ const Residents = db.define(
   }
 );
 
-export default Residents;
+export default VillageApparatus;
