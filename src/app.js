@@ -6,11 +6,13 @@ import dotenv from "dotenv";
 
 // Configuration
 import db from "./configs/Database.js";
-import createModel from "./models/ModelVillageApparatus.js";
+import createModel from "./models/ModelStalls.js";
 
 // Router API
 import RouteStallCategories from "./routers/RouteStallCategories.js";
 import RouteAuth from "./routers/RouteAuth.js";
+import RouteStall from "./routers/RouteStall.js";
+import RouteRole from "./routers/RouteRole.js";
 
 dotenv.config();
 
@@ -31,8 +33,10 @@ app.use(fileUpload());
 app.use("/public", express.static("public"));
 
 // End Point API
+app.use("/stall", RouteStall);
 app.use("/stall-categories", RouteStallCategories);
 app.use("/auth", RouteAuth);
+app.use("/role", RouteRole);
 
 app.listen(5001, () => {
   console.log("Server running at port 5001....");
