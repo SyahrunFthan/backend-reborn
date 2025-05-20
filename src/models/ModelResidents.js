@@ -1,45 +1,45 @@
 import { DataTypes } from "sequelize";
 import db from "../configs/Database.js";
 
-const ModelResidents = db.define(
+const Residents = db.define(
   "residents",
   {
     uuid: {
-        type: DataTypes.STRING,
-        primaryKey: true,
-        autoIncrement: true,
+      type: DataTypes.STRING,
+      primaryKey: true,
+      autoIncrement: true,
     },
     nik: {
-        type: DataTypes.STRING,
-        allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     no_kk: {
-        type: DataTypes.STRING,
-        allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     place_birth: {
-        type: DataTypes.STRING,
+      type: DataTypes.STRING,
     },
     date_birth: {
-        type: DataTypes.DATE,
+      type: DataTypes.DATE,
     },
     gender: {
-        type: DataTypes.ENUM('L', 'P'),
+      type: DataTypes.ENUM("L", "P"),
     },
     status: {
-        type: DataTypes.STRING,
+      type: DataTypes.STRING,
     },
     religion: {
-        type: DataTypes.STRING,
+      type: DataTypes.STRING,
     },
     education: {
-        type: DataTypes.STRING,
+      type: DataTypes.STRING,
     },
     work: {
-        type: DataTypes.STRING,
+      type: DataTypes.STRING,
     },
     age: {
-        type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER,
     },
   },
   {
@@ -47,4 +47,4 @@ const ModelResidents = db.define(
   }
 );
 
-export default ModelResidents;
+export default Residents;

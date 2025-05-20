@@ -5,7 +5,7 @@ import Roles from "./ModelRoles.js";
 const Users = db.define(
   "users",
   {
-    id_user: {
+    uuid: {
       type: DataTypes.STRING,
       primaryKey: true,
       allowNull: false,
@@ -48,7 +48,7 @@ const Users = db.define(
 Users.belongsTo(Roles, {
   foreignKey: "role_id",
   as: "roles",
-  onDelete: "cascade",
+  onDelete: "restrict",
 });
 
 export default Users;

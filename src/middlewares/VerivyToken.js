@@ -25,10 +25,7 @@ const verifyToken = async (req, res, next) => {
 
     jwt.verify(token, process.env.ACCESS_SECRET_TOKEN, async (err, decoded) => {
       if (err) {
-        await Users.update(
-          { token: null },
-          { where: { id_user: user.id_user } }
-        );
+        await Users.update({ token: null }, { where: { uuid: user.uuid } });
 
         res.clearCookies("token");
         return res
@@ -36,7 +33,7 @@ const verifyToken = async (req, res, next) => {
           .json({ message: "Invalid token or expired token" });
       }
 
-      req.userId = user.id_user;
+      req.userId = decoded.userId;
       req.role = user.roles.role_key;
 
       next();

@@ -1,53 +1,49 @@
 import { DataTypes } from "sequelize";
 import db from "../configs/Database.js";
 import Users from "./ModelUsers.js";
-import StallCategories from "./ModelStallCategories.js";
 
-const Stalls = db.define(
-  "stalls",
+const UpcommingMails = db.define(
+  "upcoming_mails",
   {
     uuid: {
       type: DataTypes.STRING,
       defaultValue: DataTypes.UUIDV4,
-      allowNull: false,
       primaryKey: true,
+      allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
-    name_stall: {
+    reference_number: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    price: {
-      type: DataTypes.INTEGER,
+    date_latter: {
+      type: DataTypes.DATEONLY,
       allowNull: false,
     },
-    image: {
+    objective: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    path_image: {
+    regarding: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    address: {
+    summary: {
       type: DataTypes.TEXT,
     },
-    latitude: {
-      type: DataTypes.DECIMAL(10, 8),
-    },
-    longitude: {
-      type: DataTypes.DECIMAL(11, 8),
-    },
-    user_id: {
+    letter_file: {
       type: DataTypes.STRING,
     },
-    stall_category_id: {
+    path_file: {
       type: DataTypes.STRING,
     },
-    description: {
-      type: DataTypes.TEXT,
+    created_by: {
+      type: DataTypes.STRING,
+    },
+    updated_by: {
+      type: DataTypes.STRING,
     },
   },
   {
@@ -55,14 +51,15 @@ const Stalls = db.define(
   }
 );
 
-Stalls.belongsTo(Users, {
-  foreignKey: "user_id",
-  as: "users",
-  onDelete: "cascade",
+UpcommingMails.belongsTo(Users, {
+  as: "creator",
+  foreignKey: "created_by",
+  onDelete: "restrict",
 });
-Stalls.belongsTo(StallCategories, {
-  foreignKey: "stall_category_id",
-  as: "stallCategories",
+UpcommingMails.belongsTo(Users, {
+  as: "updater",
+  foreignKey: "updated_by",
+  onDelete: "restrict",
 });
 
-export default Stalls;
+export default UpcommingMails;

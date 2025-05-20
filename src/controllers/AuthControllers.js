@@ -39,15 +39,15 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Password anda salah!" });
 
     const token = jwt.sign(
-      { userId: user.id_user },
+      { userId: user.uuid },
       process.env.ACCESS_SECRET_TOKEN,
       { expiresIn: "1d" }
     );
 
-    await Users.update({ token }, { where: { id_user: user.id_user } });
+    await Users.update({ token }, { where: { uuid: user.uuid } });
 
     const dataForClient = {
-      userId: user.id_user,
+      userId: user.uuid,
       email: user.email,
       fullname: user.fullname,
       role: user.roles.role_key,
@@ -102,7 +102,7 @@ export const logout = async (req, res) => {
   const { userId } = req;
 
   try {
-    await Users.update({ token: null }, { where: { id_user: userId } });
+    await Users.update({ token: null }, { where: { uuid: userId } });
 
     res.clearCookie("token");
     return res.status(200).json({ message: "Anda berhasil logout!" });
