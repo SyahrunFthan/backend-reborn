@@ -13,7 +13,7 @@ const Roles = db.define(
       type: DataTypes.STRING,
     },
     role_key: {
-      type: DataTypes.ENUM("superadmin", "admin", "user"),
+      type: DataTypes.ENUM("superadmin","admin","user"),
     },
   },
   {

@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 
 // Configuration
 import db from "./configs/Database.js";
-// import createModel from "./models/ModelUsers.js";
+// import createModel from "./models/ModelStalls.js";
 
 // Router API
 import RouteStallCategories from "./routers/RouteStallCategories.js";
