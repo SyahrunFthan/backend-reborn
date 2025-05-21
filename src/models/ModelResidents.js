@@ -7,6 +7,10 @@ const Residents = db.define(
     uuid: {
       type: DataTypes.STRING,
       primaryKey: true,
+      defaultValue: DataTypes.UUIDV4,
+      validate: {
+        notEmpty: true,
+      },
     },
     nik: {
       type: DataTypes.STRING,

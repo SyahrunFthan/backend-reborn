@@ -19,6 +19,7 @@ const apiDocs = JSON.parse(
 );
 import RouteStall from "./routers/RouteStall.js";
 import RouteRole from "./routers/RouteRole.js";
+import RouteResidents from "./routers/RouteResidents.js";
 
 dotenv.config();
 
@@ -45,6 +46,7 @@ app.use("/stall-categories", RouteStallCategories);
 app.use("/auth", RouteAuth);
 app.use("/incoming-mails", RouteIncomingMails);
 app.use("/role", RouteRole);
+app.use("/residents", RouteResidents);
 
 app.listen(5001, () => {
   console.log("Server running at port 5001....");
