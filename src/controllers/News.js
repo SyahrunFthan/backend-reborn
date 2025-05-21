@@ -1,6 +1,6 @@
 import News from "../models/ModelNews.js";
 import path from "path";
-import fs from "fs"
+import fs from "fs";
 
 // user
 export const createNews = async (req, res) => {
