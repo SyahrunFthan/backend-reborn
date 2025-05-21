@@ -7,7 +7,7 @@ import swaggerUi from "swagger-ui-express";
 
 // Configuration
 import db from "./configs/Database.js";
-// import createModel from "./models/ModelStalls.js";
+import createModel from "./models/ModelNewsFile.js";
 
 // Router API
 import RouteStallCategories from "./routers/RouteStallCategories.js";
@@ -20,6 +20,7 @@ const apiDocs = JSON.parse(
 import RouteStall from "./routers/RouteStall.js";
 import RouteRole from "./routers/RouteRole.js";
 import RouteResidents from "./routers/RouteResidents.js";
+import RouteNews from "./routers/RouteNews.js";
 
 dotenv.config();
 
@@ -47,6 +48,7 @@ app.use("/auth", RouteAuth);
 app.use("/incoming-mails", RouteIncomingMails);
 app.use("/role", RouteRole);
 app.use("/residents", RouteResidents);
+app.use("/news", RouteNews);
 
 app.listen(5001, () => {
   console.log("Server running at port 5001....");
