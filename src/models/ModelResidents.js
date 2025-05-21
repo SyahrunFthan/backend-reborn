@@ -7,10 +7,6 @@ const Residents = db.define(
     uuid: {
       type: DataTypes.STRING,
       primaryKey: true,
-<<<<<<< HEAD
-      autoIncrement: true,
-=======
->>>>>>> b84c2a1db0f40b1a59dd1d2d67669ce38a22052a
     },
     nik: {
       type: DataTypes.STRING,
