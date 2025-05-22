@@ -78,7 +78,7 @@ export const updateVillageStall = async (req, res) => {
   } = req.body;
   const { id } = req.params;
 
-  const Stall = await Stall.findByPk(id);
+  const Stall = await Stalls.findByPk(id);
 
   if (!req.files) {
     try {
@@ -122,8 +122,8 @@ export const updateVillageStall = async (req, res) => {
 
     file.mv(`public/stall/${filename}`);
 
-    if (Stalls.img !== null) {
-      fs.unlinkSync(`public/stall/${Stalls.img}`);
+    if (Stall.img !== null) {
+      fs.unlinkSync(`public/stall/${Stall.img}`);
     }
 
     try {

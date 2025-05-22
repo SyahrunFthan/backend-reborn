@@ -14,14 +14,16 @@ import RouteStallCategories from './routers/RouteStallCategories.js';
 import RouteAuth from './routers/RouteAuth.js';
 import RouteInComingMails from './routers/RouteInComingMails.js';
 import RouteUpGoingMails from './routers/RouteUpGoingMails.js';
+import RouteStall from './routers/RouteStall.js';
+import RouteRole from './routers/RouteRole.js';
+import RouteResidents from './routers/RouteResidents.js';
+import RouteNews from './routers/RouteNews.js';
 
 import { readFile } from 'fs/promises';
 
 const apiDocs = JSON.parse(
   await readFile(new URL('../api-docs.json', import.meta.url))
 );
-import RouteStall from './routers/RouteStall.js';
-import RouteRole from './routers/RouteRole.js';
 
 dotenv.config();
 
@@ -49,6 +51,8 @@ app.use('/auth', RouteAuth);
 app.use('/in-coming-mails', RouteInComingMails);
 app.use('/up-going-mails', RouteUpGoingMails);
 app.use('/role', RouteRole);
+app.use('/residents', RouteResidents);
+app.use('/news', RouteNews);
 
 app.listen(5001, () => {
   console.log('Server running at port 5001....');

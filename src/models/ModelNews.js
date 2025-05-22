@@ -7,6 +7,8 @@ const News = db.define(
   {
     uuid: {
       type: DataTypes.STRING,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
       primaryKey: true,
       defaultValue: DataTypes.UUIDV4,
       allowNull: false,
@@ -16,18 +18,23 @@ const News = db.define(
     },
     title: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     description: {
       type: DataTypes.TEXT,
+      allowNull: false,
     },
     img: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     path_img: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     created_by: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
   },
   {

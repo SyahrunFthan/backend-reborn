@@ -3,10 +3,10 @@ import Roles from '../models/ModelRoles.js';
 // Super Admin
 export const createRole = async (req, res) => {
   try {
-    const { role_name, key_role } = req.body;
+    const { role_name, role_key } = req.body;
     const newRole = await Roles.create({
       role_name: role_name,
-      key_role: key_role,
+      role_key: role_key,
     });
     return res
       .status(201)
@@ -22,7 +22,7 @@ export const createRole = async (req, res) => {
 export const updateRole = async (req, res) => {
   try {
     const { id } = req.params;
-    const { role_name, key_role } = req.body;
+    const { role_name, role_key } = req.body;
 
     const role = await Roles.findOne({
       where: {
@@ -36,7 +36,7 @@ export const updateRole = async (req, res) => {
 
     await role.update({
       role_name: role_name,
-      key_role: key_role,
+      role_key: role_key,
     });
 
     return res.status(200).json({ message: 'berhasil mengupdate role' });

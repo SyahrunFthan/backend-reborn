@@ -49,7 +49,7 @@ const Residents = db.define(
       type: DataTypes.INTEGER,
     },
     citizen_status: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING, // Migrasi, Mutasi, Penduduk Lokal
     },
     rt_rw_id: {
       type: DataTypes.STRING,
