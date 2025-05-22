@@ -1,44 +1,44 @@
-import IncomingMails from "../models/ModelIncomingMails.js";
-import Users from "../models/ModelUsers.js";
-import path from "path";
-import fs from "fs";
+import InComingMail from '../models/ModelInComingMails.js';
+import Users from '../models/ModelUsers.js';
+import path from 'path';
+import fs from 'fs';
 
 // Admin & User
 export const getIncomingMails = async (req, res) => {
   try {
-    const incomingMails = await IncomingMails.findAll({
+    const response = await InComingMail.findAll({
       attributes: [
-        "uuid",
-        "reference_number",
-        "date_latter",
-        "date_received",
-        "sender",
-        "regarding",
-        "summary",
-        "letter_file",
-        "path_file",
-        "created_by",
-        "updated_by",
+        'uuid',
+        'reference_number',
+        'date_latter',
+        'date_received',
+        'sender',
+        'regarding',
+        'summary',
+        'letter_file',
+        'path_file',
+        'created_by',
+        'updated_by',
       ],
       include: [
         {
           model: Users,
-          as: "creator",
-          attributes: ["uuid", "fullname"],
+          as: 'creator',
+          attributes: ['uuid', 'fullname'],
         },
         {
           model: Users,
-          as: "updater",
-          attributes: ["uuid", "fullname"],
+          as: 'updater',
+          attributes: ['uuid', 'fullname'],
         },
       ],
     });
 
-    return res.status(200).json(incomingMails);
+    return res.status(200).json(response);
   } catch (error) {
     return res
       .status(500)
-      .json({ message: "Terjadi kesalahan pada server.", error });
+      .json({ message: 'Terjadi kesalahan pada server.', error });
   }
 };
 
@@ -47,27 +47,42 @@ export const getIncomingMailId = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const incomingMail = await IncomingMails.findByPk(id, {
+    const response = await InComingMail.findByPk(id, {
       attributes: [
-        "uuid",
-        "reference_number",
-        "date_latter",
-        "date_received",
-        "sender",
-        "regarding",
-        "summary",
-        "letter_file",
-        "path_file",
-        "created_by",
-        "updated_by",
+        'uuid',
+        'reference_number',
+        'date_latter',
+        'date_received',
+        'sender',
+        'regarding',
+        'summary',
+        'letter_file',
+        'path_file',
+        'created_by',
+        'updated_by',
+      ],
+      include: [
+        {
+          model: Users,
+          as: 'creator',
+          attributes: ['uuid', 'fullname'],
+        },
+        {
+          model: Users,
+          as: 'updater',
+          attributes: ['uuid', 'fullname'],
+        },
       ],
     });
 
-    return res.status(200).json(incomingMail);
+    if (!response)
+      return res.status(404).json({ message: 'Data tidak ditemukan.' });
+
+    return res.status(200).json(response);
   } catch (error) {
     return res
       .status(500)
-      .json({ message: "Gagal mengambil data surat masuk.", error });
+      .json({ message: 'Gagal mengambil data surat masuk.', error });
   }
 };
 
@@ -83,36 +98,36 @@ export const createIncomingMail = async (req, res) => {
   } = req.body;
   const { userId } = req;
 
-  const incomingMail = await IncomingMails.findAll({
+  const incomingMail = await InComingMail.findAll({
     where: { reference_number },
   });
 
   if (incomingMail.length > 0)
     return res
       .status(400)
-      .json({ reference_number: "Nomor surat sudah terdaftar." });
+      .json({ reference_number: 'Nomor surat sudah terdaftar.' });
 
-  if (!req.files) return res.status(422).json({ file: "File wajib diunggah." });
+  if (!req.files) return res.status(422).json({ file: 'File wajib diunggah.' });
 
   try {
     const file = req.files.file;
     const ext = path.extname(file.name);
     const fileSize = file.data.length;
-    const allowedFileTypes = [".pdf"];
+    const allowedFileTypes = ['.pdf'];
 
     if (!allowedFileTypes.includes(ext.toLowerCase()))
       return res
         .status(422)
-        .json({ file: "Format file tidak didukung, harus PDF." });
+        .json({ file: 'Format file tidak didukung, harus PDF.' });
 
     if (fileSize > 3000000)
       return res
         .status(422)
-        .json({ file: "Ukuran file terlalu besar, maksimal 3MB." });
+        .json({ file: 'Ukuran file terlalu besar, maksimal 3MB.' });
 
     const fileName = Date.now() + ext;
     const pathFile = `${req.protocol}://${req.get(
-      "host"
+      'host'
     )}/public/surat-masuk/${fileName}`;
 
     file.mv(`public/surat-masuk/${fileName}`);
@@ -131,10 +146,10 @@ export const createIncomingMail = async (req, res) => {
 
     return res
       .status(201)
-      .json({ message: "Surat masuk berhasil ditambahkan." });
+      .json({ message: 'Surat masuk berhasil ditambahkan.' });
   } catch (error) {
     return res.status(500).json({
-      message: "Terjadi kesalahan saat menyimpan surat masuk.",
+      message: 'Terjadi kesalahan saat menyimpan surat masuk.',
       error,
     });
   }
@@ -158,32 +173,32 @@ export const updateIncomingMail = async (req, res) => {
       const file = req.files.file;
       const ext = path.extname(file.name);
       const fileSize = file.data.length;
-      const allowedFileTypes = [".pdf"];
+      const allowedFileTypes = ['.pdf'];
 
       if (!allowedFileTypes.includes(ext.toLowerCase()))
         return res
           .status(422)
-          .json({ file: "Format file tidak didukung, harus PDF." });
+          .json({ file: 'Format file tidak didukung, harus PDF.' });
 
       if (fileSize > 3000000)
         return res
           .status(422)
-          .json({ file: "Ukuran file terlalu besar, maksimal 3MB." });
+          .json({ file: 'Ukuran file terlalu besar, maksimal 3MB.' });
 
       const fileName = Date.now() + ext;
       const pathFile = `${req.protocol}://${req.get(
-        "host"
+        'host'
       )}/public/surat-masuk/${fileName}`;
 
       file.mv(`public/surat-masuk/${fileName}`);
 
-      const incomingMail = await IncomingMails.findByPk(id);
+      const incomingMail = await InComingMail.findByPk(id);
 
       if (incomingMail.letter_file !== null) {
         fs.unlinkSync(`public/surat-masuk/${incomingMail.letter_file}`);
       }
 
-      await IncomingMails.update(
+      await InComingMail.update(
         {
           reference_number,
           date_latter,
@@ -202,16 +217,16 @@ export const updateIncomingMail = async (req, res) => {
         }
       );
 
-      return res.status(200).json({ message: "Surat masuk berhasil di ubah." });
+      return res.status(200).json({ message: 'Surat masuk berhasil di ubah.' });
     } catch (error) {
       return res.status(500).json({
-        message: "Terjadi kesalahan saat mengubah surat masuk.",
+        message: 'Terjadi kesalahan saat mengubah surat masuk.',
         error,
       });
     }
   } else {
     try {
-      await IncomingMails.update(
+      await InComingMail.update(
         {
           reference_number,
           date_latter,
@@ -227,10 +242,10 @@ export const updateIncomingMail = async (req, res) => {
           },
         }
       );
-      return res.status(200).json({ message: "Surat masuk berhasil di ubah." });
+      return res.status(200).json({ message: 'Surat masuk berhasil di ubah.' });
     } catch (error) {
       return res.status(500).json({
-        message: "Terjadi kesalahan saat mengubah surat masuk.",
+        message: 'Terjadi kesalahan saat mengubah surat masuk.',
         error,
       });
     }
@@ -242,16 +257,16 @@ export const deleteIncomingMail = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const incomingMail = await IncomingMails.findByPk(id);
-    if (incomingMail.letter_file !== null) {
-      fs.unlinkSync(`public/surat-masuk/${incomingMail.letter_file}`);
+    const response = await InComingMail.findByPk(id);
+    if (response.letter_file !== null) {
+      fs.unlinkSync(`public/surat-masuk/${response.letter_file}`);
     }
 
-    incomingMail.destroy();
-    return res.status(200).json({ message: "Surat masuk berhasil di hapus" });
+    response.destroy();
+    return res.status(200).json({ message: 'Surat masuk berhasil di hapus' });
   } catch (error) {
     return res
       .status(500)
-      .json({ message: "Gagal saat menghapus data: ", error });
+      .json({ message: 'Gagal saat menghapus data: ', error });
   }
 };

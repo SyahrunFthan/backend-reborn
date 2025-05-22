@@ -1,13 +1,18 @@
-import { DataTypes } from "sequelize";
-import db from "../configs/Database.js";
-import Users from "./ModelUsers.js"
+import { DataTypes } from 'sequelize';
+import db from '../configs/Database.js';
+import Users from './ModelUsers.js';
 
 const News = db.define(
-  "News",
+  'news',
   {
     uuid: {
       type: DataTypes.STRING,
       primaryKey: true,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     title: {
       type: DataTypes.STRING,
@@ -31,9 +36,9 @@ const News = db.define(
 );
 
 News.belongsTo(Users, {
-  foreignKey: "created_by",
-  as: "users",
-  onDelete: "cascade",
+  foreignKey: 'created_by',
+  as: 'users',
+  onDelete: 'cascade',
 });
 
 export default News;

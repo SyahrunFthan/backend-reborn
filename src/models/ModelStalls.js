@@ -1,10 +1,10 @@
-import { DataTypes } from "sequelize";
-import db from "../configs/Database.js";
-import Users from "./ModelUsers.js";
-import StallCategories from "./ModelStallCategories.js";
+import { DataTypes } from 'sequelize';
+import db from '../configs/Database.js';
+import Users from './ModelUsers.js';
+import StallCategories from './ModelStallCategories.js';
 
 const Stalls = db.define(
-  "stalls",
+  'stalls',
   {
     uuid: {
       type: DataTypes.STRING,
@@ -35,10 +35,10 @@ const Stalls = db.define(
       type: DataTypes.TEXT,
     },
     latitude: {
-      type: DataTypes.DECIMAL(10, 8),
+      type: DataTypes.STRING(50),
     },
     longitude: {
-      type: DataTypes.DECIMAL(11, 8),
+      type: DataTypes.STRING(50),
     },
     user_id: {
       type: DataTypes.STRING,
@@ -56,13 +56,13 @@ const Stalls = db.define(
 );
 
 Stalls.belongsTo(Users, {
-  foreignKey: "user_id",
-  as: "users",
-  onDelete: "cascade",
+  foreignKey: 'user_id',
+  as: 'users',
+  onDelete: 'cascade',
 });
 Stalls.belongsTo(StallCategories, {
-  foreignKey: "stall_category_id",
-  as: "stallCategories",
+  foreignKey: 'stall_category_id',
+  as: 'stallCategories',
 });
 
 export default Stalls;

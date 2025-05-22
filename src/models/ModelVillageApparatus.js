@@ -1,8 +1,8 @@
-import { DataTypes } from "sequelize";
-import db from "../configs/Database.js";
+import { DataTypes } from 'sequelize';
+import db from '../configs/Database.js';
 
 const VillageApparatus = db.define(
-  "village_apparatus",
+  'village_apparatus',
   {
     uuid: {
       type: DataTypes.STRING,
@@ -22,7 +22,7 @@ const VillageApparatus = db.define(
       type: DataTypes.DATE,
     },
     gender: {
-      type: DataTypes.ENUM("L", "P"),
+      type: DataTypes.ENUM('L', 'P'),
     },
     status: {
       type: DataTypes.STRING,

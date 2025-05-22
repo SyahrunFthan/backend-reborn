@@ -1,8 +1,8 @@
-import { DataTypes } from "sequelize";
-import db from "../configs/Database.js";
+import { DataTypes } from 'sequelize';
+import db from '../configs/Database.js';
 
 const StallCategories = db.define(
-  "stall_categories",
+  'stall_categories',
   {
     uuid: {
       type: DataTypes.STRING,

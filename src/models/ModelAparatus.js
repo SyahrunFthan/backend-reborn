@@ -2,46 +2,46 @@ import { DataTypes } from 'sequelize';
 import db from '../configs/Database.js';
 import Users from './ModelUsers.js';
 
-const InComingMail = db.define(
-  'in_coming_mails',
+const Aparatus = db.define(
+  'village_aparatus',
   {
     uuid: {
       type: DataTypes.STRING,
-      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
+      defaultValue: DataTypes.UUIDV4,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
-    reference_number: {
+    nik: {
+      type: DataTypes.CHAR(20),
+      allowNull: false,
+    },
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    date_latter: {
+    place_birth: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    date_birth: {
       type: DataTypes.DATEONLY,
       allowNull: false,
     },
-    date_received: {
-      type: DataTypes.DATEONLY,
+    status_married: {
+      type: DataTypes.ENUM('Belum Menikah', 'Menikah'),
       allowNull: false,
     },
-    sender: {
+    task: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
-    regarding: {
+    position: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
-    summary: {
+    address: {
       type: DataTypes.TEXT,
-    },
-    letter_file: {
-      type: DataTypes.STRING,
-    },
-    path_file: {
-      type: DataTypes.STRING,
     },
     created_by: {
       type: DataTypes.STRING,
@@ -56,15 +56,15 @@ const InComingMail = db.define(
   }
 );
 
-InComingMail.belongsTo(Users, {
-  as: 'creator',
+Aparatus.belongsTo(Users, {
   foreignKey: 'created_by',
+  as: 'creator',
   onDelete: 'restrict',
 });
-InComingMail.belongsTo(Users, {
-  as: 'updater',
+Aparatus.belongsTo(Users, {
   foreignKey: 'updated_by',
+  as: 'updater',
   onDelete: 'restrict',
 });
 
-export default InComingMail;
+export default Aparatus;

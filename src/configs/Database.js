@@ -1,5 +1,5 @@
-import { Sequelize } from "sequelize";
-import dotenv from "dotenv";
+import { Sequelize } from 'sequelize';
+import dotenv from 'dotenv';
 dotenv.config();
 
 const db = new Sequelize({
@@ -8,7 +8,7 @@ const db = new Sequelize({
   password: process.env.DB_PASSWORD,
   host: process.env.DB_HOST,
   port: 3306,
-  dialect: "mysql",
+  dialect: 'mysql',
 });
 
 export default db;

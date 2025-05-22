@@ -1,27 +1,27 @@
-import StallCategories from "../models/ModelStallCategories.js";
-import path from "path";
-import fs from "fs";
+import StallCategories from '../models/ModelStallCategories.js';
+import path from 'path';
+import fs from 'fs';
 
 // Super Admin & Admin
 export const createStallCategories = async (req, res) => {
   const { title } = req.body;
 
   if (!req.files)
-    return res.status(422).json({ message: "Icon harus di isi!" });
+    return res.status(422).json({ message: 'Icon harus di isi!' });
 
   const file = req.files.file;
   const fileSize = file.data.length;
   const ext = path.extname(file.name);
-  const allowedTypes = [".png", ".jpg", ".jpeg"];
+  const allowedTypes = ['.png', '.jpg', '.jpeg'];
   const filename = Date.now() + ext;
 
   if (!allowedTypes.includes(ext.toLowerCase()))
-    return res.status(422).json({ message: "Format icon tidak di dukung!" });
+    return res.status(422).json({ message: 'Format icon tidak di dukung!' });
   if (fileSize > 300000)
-    return res.status(422).json({ message: "Ukuran icon terlalu besar!" });
+    return res.status(422).json({ message: 'Ukuran icon terlalu besar!' });
 
   const pathIcon = `${req.protocol}://${req.get(
-    "host"
+    'host'
   )}/public/icons/${filename}`;
 
   file.mv(`public/icons/${filename}`);
@@ -33,7 +33,7 @@ export const createStallCategories = async (req, res) => {
       path_icon: pathIcon,
     });
 
-    return res.status(201).json({ message: "Berhasil menambahkan kategori!" });
+    return res.status(201).json({ message: 'Berhasil menambahkan kategori!' });
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -59,7 +59,7 @@ export const updateStallCategories = async (req, res) => {
         }
       );
 
-      return res.status(200).json({ message: "Berhasil mengubah kategori!" });
+      return res.status(200).json({ message: 'Berhasil mengubah kategori!' });
     } catch (error) {
       return res.status(500).json(error);
     }
@@ -67,16 +67,16 @@ export const updateStallCategories = async (req, res) => {
     const file = req.files.file;
     const fileSize = file.data.length;
     const ext = path.extname(file.name);
-    const allowedTypes = [".png", ".jpg", ".jpeg"];
+    const allowedTypes = ['.png', '.jpg', '.jpeg'];
     const filename = Date.now() + ext;
 
     if (!allowedTypes.includes(ext.toLowerCase()))
-      return res.status(422).json({ message: "Format icon tidak di dukung!" });
+      return res.status(422).json({ message: 'Format icon tidak di dukung!' });
     if (fileSize > 300000)
-      return res.status(422).json({ message: "Ukuran icon terlalu besar!" });
+      return res.status(422).json({ message: 'Ukuran icon terlalu besar!' });
 
     const pathIcon = `${req.protocol}://${req.get(
-      "host"
+      'host'
     )}/public/icons/${filename}`;
 
     file.mv(`public/icons/${filename}`);
@@ -99,7 +99,7 @@ export const updateStallCategories = async (req, res) => {
         }
       );
 
-      return res.status(200).json({ message: "Berhasil mengubah kategori!" });
+      return res.status(200).json({ message: 'Berhasil mengubah kategori!' });
     } catch (error) {
       return res.status(500).json(error);
     }
@@ -123,7 +123,7 @@ export const deleteCategories = async (req, res) => {
       },
     });
 
-    return res.status(200).json({ message: "Berhasil menghapus kategori!" });
+    return res.status(200).json({ message: 'Berhasil menghapus kategori!' });
   } catch (error) {
     return res.status(500).json(error);
   }

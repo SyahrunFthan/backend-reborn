@@ -1,4 +1,4 @@
-import { StatusCodes } from "http-status-codes";
+import { StatusCodes } from 'http-status-codes';
 
 const verifyRole = (requiredRole) => {
   return (req, res, next) => {
@@ -7,13 +7,13 @@ const verifyRole = (requiredRole) => {
     if (!role) {
       return res
         .status(StatusCodes.FORBIDDEN)
-        .json({ message: "Role tidak ditemukan!" });
+        .json({ message: 'Role tidak ditemukan!' });
     }
 
     if (!requiredRole.includes(role)) {
       return res.status(StatusCodes.FORBIDDEN).json({
         message: `Akses ditolak! Peran yang dibutuhkan: ${requiredRole.join(
-          ", "
+          ', '
         )}`,
       });
     }

@@ -1,9 +1,9 @@
-import { DataTypes } from "sequelize";
-import db from "../configs/Database.js";
-import Roles from "./ModelRoles.js";
+import { DataTypes } from 'sequelize';
+import db from '../configs/Database.js';
+import Roles from './ModelRoles.js';
 
 const Users = db.define(
-  "users",
+  'users',
   {
     uuid: {
       type: DataTypes.STRING,
@@ -46,9 +46,9 @@ const Users = db.define(
 );
 
 Users.belongsTo(Roles, {
-  foreignKey: "role_id",
-  as: "roles",
-  onDelete: "restrict",
+  foreignKey: 'role_id',
+  as: 'roles',
+  onDelete: 'restrict',
 });
 
 export default Users;

@@ -1,8 +1,8 @@
-import { DataTypes } from "sequelize";
-import db from "../configs/Database.js";
+import { DataTypes } from 'sequelize';
+import db from '../configs/Database.js';
 
 const Roles = db.define(
-  "roles",
+  'roles',
   {
     id_role: {
       type: DataTypes.INTEGER,
@@ -13,7 +13,7 @@ const Roles = db.define(
       type: DataTypes.STRING,
     },
     role_key: {
-      type: DataTypes.ENUM("superadmin", "admin", "user"),
+      type: DataTypes.ENUM('superadmin', 'admin', 'user'),
     },
   },
   {

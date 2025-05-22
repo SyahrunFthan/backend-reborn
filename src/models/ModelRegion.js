@@ -1,47 +1,45 @@
 import { DataTypes } from 'sequelize';
 import db from '../configs/Database.js';
 import Users from './ModelUsers.js';
+import Aparatus from './ModelAparatus.js';
 
-const InComingMail = db.define(
-  'in_coming_mails',
+const Region = db.define(
+  'regions',
   {
     uuid: {
       type: DataTypes.STRING,
-      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
+      defaultValue: DataTypes.UUIDV4,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
-    reference_number: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    date_latter: {
-      type: DataTypes.DATEONLY,
-      allowNull: false,
-    },
-    date_received: {
-      type: DataTypes.DATEONLY,
-      allowNull: false,
-    },
-    sender: {
+    leader_id: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    regarding: {
-      type: DataTypes.STRING,
-      allowNull: false,
+    total_population: {
+      type: DataTypes.INTEGER,
     },
-    summary: {
+    hectare_area: {
+      type: DataTypes.STRING,
+    },
+    geo_polygon: {
       type: DataTypes.TEXT,
     },
-    letter_file: {
+    centroid_lat: {
       type: DataTypes.STRING,
     },
-    path_file: {
+    centroid_long: {
       type: DataTypes.STRING,
+    },
+    map_color: {
+      type: DataTypes.STRING(20),
     },
     created_by: {
       type: DataTypes.STRING,
@@ -56,15 +54,20 @@ const InComingMail = db.define(
   }
 );
 
-InComingMail.belongsTo(Users, {
-  as: 'creator',
+Region.belongsTo(Users, {
   foreignKey: 'created_by',
+  as: 'creator',
   onDelete: 'restrict',
 });
-InComingMail.belongsTo(Users, {
-  as: 'updater',
+Region.belongsTo(Users, {
   foreignKey: 'updated_by',
+  as: 'updater',
   onDelete: 'restrict',
+});
+Region.belongsTo(Aparatus, {
+  foreignKey: 'leader_id',
+  as: 'leader',
+  onDelete: 'cascade',
 });
 
-export default InComingMail;
+export default Region;

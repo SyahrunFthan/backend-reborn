@@ -1,34 +1,34 @@
-import express from "express";
-import validateData from "../middlewares/Validation.js";
+import express from 'express';
+import validateData from '../middlewares/Validation.js';
 import {
   createStallCategories,
   updateStallCategories,
   deleteCategories,
-} from "../controllers/StallCategories.js";
-import { schemaStallCategories } from "../validations/SchemaStallCategories.js";
-import verifyToken from "../middlewares/VerivyToken.js";
-import verifyRole from "../middlewares/VerifyRole.js";
+} from '../controllers/StallCategories.js';
+import { schemaStallCategories } from '../validations/SchemaStallCategories.js';
+import verifyToken from '../middlewares/VerivyToken.js';
+import verifyRole from '../middlewares/VerifyRole.js';
 
 const router = express.Router();
 
 router.post(
-  "/create",
+  '/create',
   verifyToken,
-  verifyRole(["superadmin", "admin"]),
+  verifyRole(['superadmin', 'admin']),
   validateData(schemaStallCategories),
   createStallCategories
 );
 router.patch(
-  "/update/:id",
+  '/update/:id',
   verifyToken,
-  verifyRole(["superadmin", "admin"]),
+  verifyRole(['superadmin', 'admin']),
   validateData(schemaStallCategories),
   updateStallCategories
 );
 router.delete(
-  "/delete/:id",
+  '/delete/:id',
   verifyToken,
-  verifyRole(["superadmin", "admin"]),
+  verifyRole(['superadmin', 'admin']),
   deleteCategories
 );
 

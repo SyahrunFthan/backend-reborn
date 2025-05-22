@@ -1,9 +1,9 @@
-import { DataTypes } from "sequelize";
-import db from "../configs/Database.js";
-import Users from "./ModelUsers.js";
+import { DataTypes } from 'sequelize';
+import db from '../configs/Database.js';
+import Users from './ModelUsers.js';
 
-const UpcommingMails = db.define(
-  "upcoming_mails",
+const UpGoingMail = db.define(
+  'up_going_mails',
   {
     uuid: {
       type: DataTypes.STRING,
@@ -41,6 +41,7 @@ const UpcommingMails = db.define(
     },
     created_by: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     updated_by: {
       type: DataTypes.STRING,
@@ -51,15 +52,15 @@ const UpcommingMails = db.define(
   }
 );
 
-UpcommingMails.belongsTo(Users, {
-  as: "creator",
-  foreignKey: "created_by",
-  onDelete: "restrict",
+UpGoingMail.belongsTo(Users, {
+  as: 'creator',
+  foreignKey: 'created_by',
+  onDelete: 'restrict',
 });
-UpcommingMails.belongsTo(Users, {
-  as: "updater",
-  foreignKey: "updated_by",
-  onDelete: "restrict",
+UpGoingMail.belongsTo(Users, {
+  as: 'updater',
+  foreignKey: 'updated_by',
+  onDelete: 'restrict',
 });
 
-export default UpcommingMails;
+export default UpGoingMail;

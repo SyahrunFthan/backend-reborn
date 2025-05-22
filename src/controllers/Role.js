@@ -1,4 +1,4 @@
-import Roles from "../models/ModelRoles.js";
+import Roles from '../models/ModelRoles.js';
 
 // Super Admin
 export const createRole = async (req, res) => {
@@ -10,11 +10,11 @@ export const createRole = async (req, res) => {
     });
     return res
       .status(201)
-      .json({ message: "Role berhasil dibuat", role: newRole });
+      .json({ message: 'Role berhasil dibuat', role: newRole });
   } catch (error) {
     return res
       .status(500)
-      .json({ message: "Gagal membuat role", error: error.message });
+      .json({ message: 'Gagal membuat role', error: error.message });
   }
 };
 
@@ -31,7 +31,7 @@ export const updateRole = async (req, res) => {
     });
 
     if (!role) {
-      return res.status(404).json({ message: "role tidak di temukan" });
+      return res.status(404).json({ message: 'role tidak di temukan' });
     }
 
     await role.update({
@@ -39,7 +39,7 @@ export const updateRole = async (req, res) => {
       key_role: key_role,
     });
 
-    return res.status(200).json({ message: "berhasil mengupdate role" });
+    return res.status(200).json({ message: 'berhasil mengupdate role' });
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -48,15 +48,15 @@ export const updateRole = async (req, res) => {
 export const deleteRole = async (req, res) => {
   const { id } = req.params;
 
-  const Roles = await Roles.findByPk(id)
+  const Roles = await Roles.findByPk(id);
 
   try {
     await Roles.destroy({
-        where:{
-            uuid:id
-        }
-    })
+      where: {
+        uuid: id,
+      },
+    });
   } catch (error) {
-    return res.status(500).json(error)
+    return res.status(500).json(error);
   }
 };
