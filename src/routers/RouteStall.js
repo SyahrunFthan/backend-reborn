@@ -14,21 +14,21 @@ const router = express.Router();
 router.post(
   '/create',
   verifyToken,
-  verifyRole(['admin']),
+  verifyRole(['admin', 'user']),
   validateData(schemaStall),
   createVillageStall
 );
 router.patch(
   '/update/:id',
   verifyToken,
-  verifyRole(['admin']),
+  verifyRole(['admin', 'user']),
   validateData(schemaStall),
   updateVillageStall
 );
 router.delete(
   '/delete/:id',
   verifyToken,
-  verifyRole(['admin']),
+  verifyRole(['admin', 'user']),
   deleteVillageStall
 );
 

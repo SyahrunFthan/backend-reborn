@@ -3,7 +3,7 @@ import StallCategories from '../models/ModelStallCategories.js';
 import path from 'path';
 import fs from 'fs';
 
-// Admin
+// Admin & User
 export const createVillageStall = async (req, res) => {
   const {
     title,
@@ -64,7 +64,7 @@ export const createVillageStall = async (req, res) => {
   }
 };
 
-//Admin
+//Admin & User
 export const updateVillageStall = async (req, res) => {
   const {
     title,
@@ -154,7 +154,7 @@ export const updateVillageStall = async (req, res) => {
   }
 };
 
-// Admin
+// Admin & User
 export const deleteVillageStall = async (req, res) => {
   try {
     const { id } = req.params;
