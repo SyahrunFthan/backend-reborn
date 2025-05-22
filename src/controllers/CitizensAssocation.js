@@ -12,3 +12,18 @@ export const getCitizensAssocation = async (req, res) => {
     return res.status(500).json(error);
   }
 };
+
+export const getCitizensAssocationById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const response = await CitizensAssocation.findByPk(id);
+
+    if (response.length == 0)
+      return res.status(404).json({ message: 'Data Not Found.' });
+
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};

@@ -1,6 +1,6 @@
-import News from "../models/ModelNews.js";
-import path from "path";
-import fs from "fs";
+import News from '../models/ModelNews.js';
+import path from 'path';
+import fs from 'fs';
 
 // user
 import NewsFile from '../models/ModelNewsFile.js'; // Pastikan model ada
@@ -11,11 +11,11 @@ export const createNews = async (req, res) => {
 
   // Memastikan ada file yang di-upload
   if (!req.files || req.files.file.length === 0) {
-    return res.status(422).json({ message: "Img harus di isi!" });
+    return res.status(422).json({ message: 'Img harus di isi!' });
   }
 
   const files = req.files.file; // Mengambil semua file yang di-upload
-  const allowedTypes = [".png", ".jpg", ".jpeg"];
+  const allowedTypes = ['.png', '.jpg', '.jpeg'];
   const fileSizeLimit = 300000; // 300 KB
   let selectedImage = null; // Untuk menyimpan nama gambar utama
 
@@ -26,10 +26,10 @@ export const createNews = async (req, res) => {
 
     // Validasi format dan ukuran file
     if (!allowedTypes.includes(ext.toLowerCase())) {
-      return res.status(422).json({ message: "Format img tidak di dukung!" });
+      return res.status(422).json({ message: 'Format img tidak di dukung!' });
     }
     if (fileSize > fileSizeLimit) {
-      return res.status(422).json({ message: "Ukuran img terlalu besar!" });
+      return res.status(422).json({ message: 'Ukuran img terlalu besar!' });
     }
 
     // Simpan file ke server
@@ -45,7 +45,7 @@ export const createNews = async (req, res) => {
     await NewsFile.create({
       news_id: null, // Akan diisi setelah news dibuat
       file_name: filename,
-      path: `${req.protocol}://${req.get("host")}/public/News/${filename}`,
+      path: `${req.protocol}://${req.get('host')}/public/News/${filename}`,
     });
   }
 
@@ -55,7 +55,7 @@ export const createNews = async (req, res) => {
       title: title,
       description: description,
       img: selectedImage,
-      path_img: `${req.protocol}://${req.get("host")}/public/News/${selectedImage}`,
+      path_img: `${req.protocol}://${req.get('host')}/public/News/${selectedImage}`,
       created_by: id,
     });
 
@@ -65,7 +65,7 @@ export const createNews = async (req, res) => {
       { where: { news_id: null } } // Update semua file yang belum memiliki news_id
     );
 
-    return res.status(201).json({ message: "Berhasil membuat news" });
+    return res.status(201).json({ message: 'Berhasil membuat news' });
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -91,7 +91,7 @@ export const updateNews = async (req, res) => {
         }
       );
 
-      return res.status(200).json({ message: "Berhasil mengubah News!" });
+      return res.status(200).json({ message: 'Berhasil mengubah News!' });
     } catch (error) {
       return res.status(500).json(error);
     }
@@ -99,16 +99,16 @@ export const updateNews = async (req, res) => {
     const file = req.files.file;
     const fileSize = file.data.length;
     const ext = path.extname(file.name);
-    const allowedTypes = [".png", ".jpg", ".jpeg"];
+    const allowedTypes = ['.png', '.jpg', '.jpeg'];
     const filename = Date.now() + ext;
 
     if (!allowedTypes.includes(ext.toLowerCase()))
-      return res.status(422).json({ message: "Format img tidak di dukung!" });
+      return res.status(422).json({ message: 'Format img tidak di dukung!' });
     if (fileSize > 300000)
-      return res.status(422).json({ message: "Ukuran img terlalu besar!" });
+      return res.status(422).json({ message: 'Ukuran img terlalu besar!' });
 
     const pathImg = `${req.protocol}://${req.get(
-      "host"
+      'host'
     )}/public/news/${filename}`;
 
     file.mv(`public/news/${filename}`);
@@ -132,7 +132,7 @@ export const updateNews = async (req, res) => {
         }
       );
 
-      return res.status(200).json({ message: "Berhasil mengubah kategori!" });
+      return res.status(200).json({ message: 'Berhasil mengubah kategori!' });
     } catch (error) {
       return res.status(500).json(error);
     }
@@ -156,7 +156,7 @@ export const deleteNews = async (req, res) => {
       },
     });
 
-    return res.status(200).json({ message: "berhasil menghapus news!" });
+    return res.status(200).json({ message: 'berhasil menghapus news!' });
   } catch (error) {
     return res.status(500).json(error);
   }
