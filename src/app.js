@@ -7,7 +7,7 @@ import swaggerUi from 'swagger-ui-express';
 
 // Configuration
 import db from './configs/Database.js';
-// import createModel from './models/ModelResidents.js';
+import createModel from './models/ModelNewsFile.js';
 
 // Router API
 import RouteStallCategories from './routers/RouteStallCategories.js';
@@ -31,8 +31,9 @@ const app = express();
 
 try {
   await db.authenticate();
+  await db.sync();
   console.log('Database connected');
-  // createModel.sync({ alter: true });
+  createModel.sync({ alter: true });
 } catch (error) {
   console.log(error);
 }
