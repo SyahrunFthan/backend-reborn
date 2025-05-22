@@ -2,18 +2,81 @@ import Stalls from '../models/ModelStalls.js';
 import StallCategories from '../models/ModelStallCategories.js';
 import path from 'path';
 import fs from 'fs';
+import { Op } from 'sequelize';
+
+export const getStallBySearch = async (req, res) => {
+  try {
+    const { id = '', page = 1 } = req.query;
+    const search = req.query.search?.trim() || '';
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const offset = (page - 1) * limit;
+
+    const whereClause = {};
+
+    if (search) {
+      const searchConditions = [
+        { name_stall: { [Op.like]: `%${search}%` } },
+        { name_seller: { [Op.like]: `%${search}%` } },
+      ];
+
+      if (id) {
+        searchConditions.push({ stall_category_id: id });
+      }
+
+      whereClause[Op.or] = searchConditions;
+    } else if (id) {
+      whereClause.stall_category_id = id;
+    }
+
+    const [stallCategories, stalls] = await Promise.all([
+      StallCategories.findAll(),
+      Stalls.findAndCountAll({
+        attributes: [
+          'uuid',
+          'name_stall',
+          'price',
+          'name_seller',
+          'phone',
+          'address',
+          'path_img',
+          'img',
+          'latitude',
+          'longitude',
+          'description',
+        ],
+        where: whereClause,
+        order: [['price', 'asc']],
+        limit,
+        offset,
+      }),
+    ]);
+
+    const totalPage = Math.ceil(stalls.count / limit);
+
+    return res.status(200).json({
+      stallCategories,
+      stalls: stalls.rows,
+      totalData: stalls.count,
+      totalPage,
+      currentPage: Number(page),
+    });
+  } catch (error) {
+    console.error('Error in getStallBySearch:', error);
+    return res.status(500).json({ message: 'Internal server error', error });
+  }
+};
 
 // Admin & User
 export const createVillageStall = async (req, res) => {
   const {
-    title,
+    name_stall,
     price,
     name_seller,
     phone,
     address,
     latitude,
     longitude,
-    category_id,
+    stall_category_id,
   } = req.body;
 
   if (!req.files || !req.files.file)
@@ -32,30 +95,27 @@ export const createVillageStall = async (req, res) => {
 
   if (fileSize > 3000000)
     return res.status(422).json({ message: 'Ukuran gambar terlalu besar!' });
-  file.mv(`public/villageStall/${filename}`);
 
   const pathFile = `${req.protocol}://${req.get(
     'host'
-  )}/public/villageStall/${filename}`;
+  )}/public/village-stall/${filename}`;
 
   try {
-    const checkCategory = await StallCategories.findByPk(category_id);
-    if (!checkCategory) {
-      return res.status(404).json({ meesage: 'category tidak ada' });
-    }
-
     await Stalls.create({
-      title: title,
+      name_stall,
       price: parsedPrice,
-      name_seller: name_seller,
-      phone: phone,
+      name_seller,
+      phone,
       address,
       img: filename,
       path_img: pathFile,
-      latitude: latitude,
-      longitude: longitude,
-      category_id: category_id,
+      latitude,
+      longitude,
+      stall_category_id,
     });
+
+    file.mv(`public/village-stall/${filename}`);
+
     return res
       .status(201)
       .json({ message: 'berhasil menyimpan data lapak desa' });

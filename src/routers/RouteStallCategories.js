@@ -13,8 +13,8 @@ const router = express.Router();
 
 router.post(
   '/create',
-  verifyToken,
-  verifyRole(['superadmin', 'admin']),
+  // verifyToken,
+  // verifyRole(['superadmin', 'admin']),
   validateData(schemaStallCategories),
   createStallCategories
 );

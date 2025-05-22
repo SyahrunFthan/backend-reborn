@@ -23,11 +23,19 @@ const Stalls = db.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    image: {
+    name_seller: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    path_image: {
+    phone: {
+      type: DataTypes.CHAR(20),
+      allowNull: false,
+    },
+    img: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    path_img: {
       type: DataTypes.STRING,
       allowNull: false,
     },
