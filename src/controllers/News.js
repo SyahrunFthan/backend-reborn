@@ -3,42 +3,73 @@ import path from "path";
 import fs from "fs";
 
 // user
+import NewsFile from '../models/ModelNewsFile.js'; // Pastikan model ada
+
 export const createNews = async (req, res) => {
   const { title, description } = req.body;
   const { id } = req.params;
 
-  if (!req.files) return res.status(422).json({ message: "Img harus di isi!" });
+  // Memastikan ada file yang di-upload
+  if (!req.files || req.files.file.length === 0) {
+    return res.status(422).json({ message: "Img harus di isi!" });
+  }
 
-  const file = req.files.file;
-  const fileSize = file.data.length;
-  const ext = path.extname(file.name);
+  const files = req.files.file; // Mengambil semua file yang di-upload
   const allowedTypes = [".png", ".jpg", ".jpeg"];
-  const filename = Date.now() + ext;
+  const fileSizeLimit = 300000; // 300 KB
+  let selectedImage = null; // Untuk menyimpan nama gambar utama
 
-  if (!allowedTypes.includes(ext.toLowerCase()))
-    return res.status(422).json({ message: "Format img tidak di dukung!" });
-  if (fileSize > 300000)
-    return res.status(422).json({ message: "Ukuran img terlalu besar!" });
+  // Loop melalui setiap file untuk validasi dan penyimpanan
+  for (const file of files) {
+    const fileSize = file.data.length;
+    const ext = path.extname(file.name);
 
-  file.mv(`public/News/${filename}`);
-  const pathImg = `${req.protocol}://${req.get(
-    "host"
-  )}/public/News/${filename}`;
+    // Validasi format dan ukuran file
+    if (!allowedTypes.includes(ext.toLowerCase())) {
+      return res.status(422).json({ message: "Format img tidak di dukung!" });
+    }
+    if (fileSize > fileSizeLimit) {
+      return res.status(422).json({ message: "Ukuran img terlalu besar!" });
+    }
+
+    // Simpan file ke server
+    const filename = Date.now() + ext;
+    file.mv(`public/News/${filename}`);
+
+    // Pilih file pertama sebagai gambar utama
+    if (!selectedImage) {
+      selectedImage = filename;
+    }
+
+    // Simpan informasi file ke tabel news_file
+    await NewsFile.create({
+      news_id: null, // Akan diisi setelah news dibuat
+      file_name: filename,
+      path: `${req.protocol}://${req.get("host")}/public/News/${filename}`,
+    });
+  }
 
   try {
-    await News.create({
+    // Buat entri di tabel news
+    const newsEntry = await News.create({
       title: title,
       description: description,
-      img: filename,
-      path_img: pathImg,
+      img: selectedImage,
+      path_img: `${req.protocol}://${req.get("host")}/public/News/${selectedImage}`,
       created_by: id,
     });
-    return res.status(201).json({ message: "berhasil membuat news" });
+
+    // Update news_file dengan news_id
+    await NewsFile.update(
+      { news_id: newsEntry.uuid }, // Asumsi uuid adalah primary key di News
+      { where: { news_id: null } } // Update semua file yang belum memiliki news_id
+    );
+
+    return res.status(201).json({ message: "Berhasil membuat news" });
   } catch (error) {
     return res.status(500).json(error);
   }
 };
-
 // user
 export const updateNews = async (req, res) => {
   const { id } = req.params;
