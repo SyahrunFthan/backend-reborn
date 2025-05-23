@@ -43,6 +43,14 @@ const Aparatus = db.define(
     address: {
       type: DataTypes.TEXT,
     },
+    img: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    path_img: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     created_by: {
       type: DataTypes.STRING,
       allowNull: false,
