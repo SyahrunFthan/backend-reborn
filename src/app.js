@@ -7,7 +7,7 @@ import swaggerUi from 'swagger-ui-express';
 
 // Configuration
 import db from './configs/Database.js';
-import createModel from './models/ModelStalls.js';
+import createModel from './models/ModelAparatus.js';
 
 // Router API
 import RouteStallCategories from './routers/RouteStallCategories.js';
@@ -18,6 +18,7 @@ import RouteStall from './routers/RouteStall.js';
 import RouteRole from './routers/RouteRole.js';
 import RouteResidents from './routers/RouteResidents.js';
 import RouteNews from './routers/RouteNews.js';
+import RouteVillageApparatus from './routers/RouteVillageApparatus.js';
 
 import { readFile } from 'fs/promises';
 
@@ -54,6 +55,7 @@ app.use('/up-going-mails', RouteUpGoingMails);
 app.use('/role', RouteRole);
 app.use('/residents', RouteResidents);
 app.use('/news', RouteNews);
+app.use('/village-apparatus', RouteVillageApparatus);
 
 app.listen(5001, () => {
   console.log('Server running at port 5001....');
