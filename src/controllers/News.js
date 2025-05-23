@@ -9,22 +9,19 @@ export const createNews = async (req, res) => {
   const { title, description } = req.body;
   const { id } = req.params;
 
-  // Memastikan ada file yang di-upload
   if (!req.files || req.files.file.length === 0) {
     return res.status(422).json({ message: 'Img harus di isi!' });
   }
 
-  const files = req.files.file; // Mengambil semua file yang di-upload
+  const files = req.files.file;
   const allowedTypes = ['.png', '.jpg', '.jpeg'];
-  const fileSizeLimit = 300000; // 300 KB
-  let selectedImage = null; // Untuk menyimpan nama gambar utama
+  const fileSizeLimit = 300000;
+  let selectedImage = null;
 
-  // Loop melalui setiap file untuk validasi dan penyimpanan
   for (const file of files) {
     const fileSize = file.data.length;
     const ext = path.extname(file.name);
 
-    // Validasi format dan ukuran file
     if (!allowedTypes.includes(ext.toLowerCase())) {
       return res.status(422).json({ message: 'Format img tidak di dukung!' });
     }
@@ -32,7 +29,6 @@ export const createNews = async (req, res) => {
       return res.status(422).json({ message: 'Ukuran img terlalu besar!' });
     }
 
-    // Simpan file ke server
     const filename = Date.now() + ext;
     file.mv(`public/News/${filename}`);
 
@@ -41,28 +37,22 @@ export const createNews = async (req, res) => {
       selectedImage = filename;
     }
 
-    // Simpan informasi file ke tabel news_file
     await NewsFile.create({
-      news_id: null, // Akan diisi setelah news dibuat
-      file_name: filename,
-      path: `${req.protocol}://${req.get('host')}/public/News/${filename}`,
+      img: filename,
+      path_img: `${req.protocol}://${req.get('host')}/public/News/${filename}`,
     });
   }
 
   try {
-    // Buat entri di tabel news
     const newsEntry = await News.create({
       title: title,
       description: description,
-      img: selectedImage,
-      path_img: `${req.protocol}://${req.get('host')}/public/News/${selectedImage}`,
       created_by: id,
     });
 
-    // Update news_file dengan news_id
     await NewsFile.update(
-      { news_id: newsEntry.uuid }, // Asumsi uuid adalah primary key di News
-      { where: { news_id: null } } // Update semua file yang belum memiliki news_id
+      { news_id: newsEntry.uuid },
+      { where: { news_id: null } }
     );
 
     return res.status(201).json({ message: 'Berhasil membuat news' });

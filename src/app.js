@@ -7,7 +7,7 @@ import swaggerUi from 'swagger-ui-express';
 
 // Configuration
 import db from './configs/Database.js';
-import createModel from './models/ModelStalls.js';
+import createModel from './models/ModelNews.js';
 
 // Router API
 import RouteStallCategories from './routers/RouteStallCategories.js';

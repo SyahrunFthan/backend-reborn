@@ -24,14 +24,6 @@ const News = db.define(
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    img: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    path_img: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     created_by: {
       type: DataTypes.STRING,
       allowNull: false,
