@@ -4,6 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import { Op } from 'sequelize';
 import formatPhoneNumber from '../utils/formatPhone.js';
+import Users from '../models/ModelUsers.js';
 
 export const getStallBySearch = async (req, res) => {
   try {
@@ -52,17 +53,17 @@ export const createVillageStall = async (req, res) => {
   const {
     name_stall,
     price,
-    name_seller,
     phone,
     address,
     latitude,
     longitude,
     stall_category_id,
+    description,
   } = req.body;
+  const { userId } = req;
 
-  if (!req.files || !req.files.file)
-    return res.status(422).json({ message: 'gambar wajib di isi!' });
-
+  if (!req.files)
+    return res.status(422).json({ file: 'Gambar tidak boleh kosong.' });
   const file = req.files.file;
   const fileSize = file.data.length;
   const ext = path.extname(file.name);
@@ -81,15 +82,19 @@ export const createVillageStall = async (req, res) => {
 
   const phoneFormat = formatPhoneNumber(phone);
 
+  const user = await Users.findByPk(userId);
+
   try {
     await Stalls.create({
       name_stall,
-      name_seller,
       address,
       latitude,
       longitude,
       stall_category_id,
       price,
+      description,
+      name_seller: user.fullname,
+      user_id: userId,
       phone: phoneFormat,
       img: filename,
       path_img: pathFile,
