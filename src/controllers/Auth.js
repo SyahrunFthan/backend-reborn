@@ -2,21 +2,7 @@ import Users from '../models/ModelUsers.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import Roles from '../models/ModelRoles.js';
-
-// Function Format Phone Number
-const formatPhoneNumber = (phoneNumber) => {
-  phoneNumber = phoneNumber.replace(/\D/g, '');
-
-  if (phoneNumber.startsWith('08')) {
-    return '62' + phoneNumber.slice(1);
-  }
-
-  if (phoneNumber.startsWith('8')) {
-    return '62' + phoneNumber.slice(0);
-  }
-
-  return phoneNumber;
-};
+import formatPhoneNumber from '../utils/formatPhone.js';
 
 // Login User For Mobile App (Fix)
 export const login = async (req, res) => {
@@ -41,7 +27,7 @@ export const login = async (req, res) => {
     const token = jwt.sign(
       { userId: user.uuid },
       process.env.ACCESS_SECRET_TOKEN,
-      { expiresIn: '1d' }
+      { expiresIn: '24h' }
     );
 
     await Users.update({ token }, { where: { uuid: user.uuid } });
@@ -109,4 +95,15 @@ export const logout = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
+};
+
+export const removeToken = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await Users.update({ token: null }, { where: { uuid: id } });
+    res.clearCookie('token');
+
+    return res.status(200).json({ message: 'Token berhasil dihapus!' });
+  } catch (error) {}
 };

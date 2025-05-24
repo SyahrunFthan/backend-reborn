@@ -1,8 +1,14 @@
 # Abaikan semua file di dalam folder
 /node_modules
 /public/icons/*
+/public/surat-keluar/*
+/public/surat-masuk/*
+/public/village-stall/*
 
 !public/icons
+!public/surat-keluar
+!public/surat-masuk
+!public/village-stall
 
 /logs
 *.log

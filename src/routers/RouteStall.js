@@ -15,8 +15,8 @@ const router = express.Router();
 router.get('/', getStallBySearch);
 router.post(
   '/create',
-  // verifyToken,
-  // verifyRole(['admin', 'user']),
+  verifyToken,
+  verifyRole(['admin', 'user']),
   validateData(schemaStall),
   createVillageStall
 );

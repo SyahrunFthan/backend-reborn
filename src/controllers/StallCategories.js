@@ -2,7 +2,19 @@ import StallCategories from '../models/ModelStallCategories.js';
 import path from 'path';
 import fs from 'fs';
 
-// Super Admin & Admin
+// Admin & User
+export const getStallCategories = async (req, res) => {
+  try {
+    const response = await StallCategories.findAll({
+      attributes: ['uuid', 'title', 'path_icon', 'icon'],
+    });
+
+    return res.status(200).json({ response });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+// Admin
 export const createStallCategories = async (req, res) => {
   const { title } = req.body;
 
@@ -39,7 +51,7 @@ export const createStallCategories = async (req, res) => {
   }
 };
 
-// Super Admin & Admin
+// Admin
 export const updateStallCategories = async (req, res) => {
   const { title } = req.body;
   const { id } = req.params;
@@ -106,7 +118,7 @@ export const updateStallCategories = async (req, res) => {
   }
 };
 
-// Super Admin & Admin
+// Admin
 export const deleteCategories = async (req, res) => {
   const { id } = req.params;
 

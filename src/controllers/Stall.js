@@ -3,63 +3,44 @@ import StallCategories from '../models/ModelStallCategories.js';
 import path from 'path';
 import fs from 'fs';
 import { Op } from 'sequelize';
+import formatPhoneNumber from '../utils/formatPhone.js';
 
 export const getStallBySearch = async (req, res) => {
   try {
-    const { id = '', page = 1 } = req.query;
-    const search = req.query.search?.trim() || '';
-    const limit = parseInt(req.query.limit, 10) || 10;
+    const id = req.query.id;
+    const search = req.query.search || '';
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
 
-    const whereClause = {};
-
-    if (search) {
-      const searchConditions = [
-        { name_stall: { [Op.like]: `%${search}%` } },
-        { name_seller: { [Op.like]: `%${search}%` } },
-      ];
-
-      if (id) {
-        searchConditions.push({ stall_category_id: id });
-      }
-
-      whereClause[Op.or] = searchConditions;
-    } else if (id) {
-      whereClause.stall_category_id = id;
-    }
-
-    const [stallCategories, stalls] = await Promise.all([
-      StallCategories.findAll(),
-      Stalls.findAndCountAll({
-        attributes: [
-          'uuid',
-          'name_stall',
-          'price',
-          'name_seller',
-          'phone',
-          'address',
-          'path_img',
-          'img',
-          'latitude',
-          'longitude',
-          'description',
-        ],
-        where: whereClause,
-        order: [['price', 'asc']],
-        limit,
-        offset,
-      }),
-    ]);
-
-    const totalPage = Math.ceil(stalls.count / limit);
-
-    return res.status(200).json({
-      stallCategories,
-      stalls: stalls.rows,
-      totalData: stalls.count,
-      totalPage,
-      currentPage: Number(page),
+    const { rows: response, count: total } = await Stalls.findAndCountAll({
+      attributes: [
+        'uuid',
+        'name_stall',
+        'price',
+        'name_seller',
+        'phone',
+        'address',
+        'path_img',
+        'img',
+        'latitude',
+        'longitude',
+        'description',
+      ],
+      where: {
+        name_stall: {
+          [Op.like]: `%${search}%`,
+        },
+        ...(id && { stall_category_id: id }),
+      },
+      order: [['price', 'asc']],
+      ...(limit && { limit: limit }),
+      ...(offset && { offset: offset }),
     });
+
+    const totalRow = Math.ceil(total / limit);
+
+    return res.status(200).json({ response, totalRow, page });
   } catch (error) {
     console.error('Error in getStallBySearch:', error);
     return res.status(500).json({ message: 'Internal server error', error });
@@ -82,8 +63,6 @@ export const createVillageStall = async (req, res) => {
   if (!req.files || !req.files.file)
     return res.status(422).json({ message: 'gambar wajib di isi!' });
 
-  const parsedPrice = typeof price === 'string' ? parseInt(price, 10) : price;
-
   const file = req.files.file;
   const fileSize = file.data.length;
   const ext = path.extname(file.name);
@@ -100,18 +79,20 @@ export const createVillageStall = async (req, res) => {
     'host'
   )}/public/village-stall/${filename}`;
 
+  const phoneFormat = formatPhoneNumber(phone);
+
   try {
     await Stalls.create({
       name_stall,
-      price: parsedPrice,
       name_seller,
-      phone,
       address,
-      img: filename,
-      path_img: pathFile,
       latitude,
       longitude,
       stall_category_id,
+      price,
+      phone: phoneFormat,
+      img: filename,
+      path_img: pathFile,
     });
 
     file.mv(`public/village-stall/${filename}`);

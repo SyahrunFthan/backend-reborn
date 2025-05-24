@@ -2,8 +2,7 @@ import News from '../models/ModelNews.js';
 import path from 'path';
 import fs from 'fs';
 
-// user
-import NewsFile from '../models/ModelNewsFile.js'; // Pastikan model ada
+import NewsFile from '../models/ModelNewsFile.js';
 
 export const createNews = async (req, res) => {
   const { title, description } = req.body;
