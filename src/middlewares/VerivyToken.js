@@ -27,7 +27,7 @@ const verifyToken = async (req, res, next) => {
       if (err) {
         await Users.update({ token: null }, { where: { uuid: user.uuid } });
 
-        res.clearCookies('token');
+        res.clearCookie('token');
         return res
           .status(403)
           .json({ message: 'Invalid token or expired token' });

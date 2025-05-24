@@ -7,7 +7,7 @@ import swaggerUi from 'swagger-ui-express';
 
 // Configuration
 import db from './configs/Database.js';
-import createModel from './models/ModelAparatus.js';
+// import createModel from './models/ModelStalls.js';
 
 // Router API
 import RouteStallCategories from './routers/RouteStallCategories.js';
@@ -32,7 +32,6 @@ const app = express();
 
 try {
   await db.authenticate();
-  // await db.sync();
   console.log('Database connected');
   // createModel.sync({ alter: true });
 } catch (error) {
@@ -40,7 +39,12 @@ try {
 }
 
 app.use(express.json());
-app.use(cors({ credentials: true, origin: 'http://localhost:5173/' }));
+app.use(
+  cors({
+    credentials: true,
+    origin: ['http://localhost:5173/', 'http://192.168.1.7:5001/'],
+  })
+);
 app.use(cookieParser());
 app.use(fileUpload());
 app.use('/public', express.static('public'));

@@ -4,6 +4,7 @@ import {
   createStallCategories,
   updateStallCategories,
   deleteCategories,
+  getStallCategories,
 } from '../controllers/StallCategories.js';
 import { schemaStallCategories } from '../validations/SchemaStallCategories.js';
 import verifyToken from '../middlewares/VerivyToken.js';
@@ -11,24 +12,25 @@ import verifyRole from '../middlewares/VerifyRole.js';
 
 const router = express.Router();
 
+router.get('/', verifyToken, verifyRole(['admin', 'user']), getStallCategories);
 router.post(
   '/create',
-  // verifyToken,
-  // verifyRole(['superadmin', 'admin']),
+  verifyToken,
+  verifyRole(['admin']),
   validateData(schemaStallCategories),
   createStallCategories
 );
 router.patch(
   '/update/:id',
   verifyToken,
-  verifyRole(['superadmin', 'admin']),
+  verifyRole(['admin']),
   validateData(schemaStallCategories),
   updateStallCategories
 );
 router.delete(
   '/delete/:id',
   verifyToken,
-  verifyRole(['superadmin', 'admin']),
+  verifyRole(['admin']),
   deleteCategories
 );
 
