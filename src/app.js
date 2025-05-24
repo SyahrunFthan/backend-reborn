@@ -3,12 +3,12 @@ import fileUpload from 'express-fileupload';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
-import swaggerUi from 'swagger-ui-express';
+// import swaggerUi from 'swagger-ui-express';
 import rateLimit from 'express-rate-limit';
 
 // Configuration
 import db from './configs/Database.js';
-import createModel from './models/ModelFamilyCards.js';
+// import createModel from './models/ModelServiceDetails.js';
 
 // Router API
 import RouteStallCategories from './routers/RouteStallCategories.js';
@@ -21,11 +21,11 @@ import RouteResidents from './routers/RouteResidents.js';
 import RouteNews from './routers/RouteNews.js';
 import RouteVillageApparatus from './routers/RouteVillageApparatus.js';
 
-import { readFile } from 'fs/promises';
+// import { readFile } from 'fs/promises';
 
-const apiDocs = JSON.parse(
-  await readFile(new URL('../api-docs.json', import.meta.url))
-);
+// const apiDocs = JSON.parse(
+//   await readFile(new URL('../api-docs.json', import.meta.url))
+// );
 
 dotenv.config();
 
@@ -34,7 +34,7 @@ const app = express();
 try {
   await db.authenticate();
   console.log('Database connected');
-  createModel.sync({ alter: true });
+  // createModel.sync({ alter: true });
 } catch (error) {
   console.log(error);
 }
@@ -56,7 +56,7 @@ app.use(limiter);
 app.use(cookieParser());
 app.use(fileUpload());
 app.use('/public', express.static('public'));
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDocs));
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDocs));
 
 // End Point API
 app.use('/stall', RouteStall);
