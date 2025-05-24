@@ -12,7 +12,7 @@ import verifyRole from '../middlewares/VerifyRole.js';
 
 const router = express.Router();
 
-router.get('/', getStallBySearch);
+router.get('/', verifyToken, getStallBySearch);
 router.post(
   '/create',
   verifyToken,
