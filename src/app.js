@@ -4,6 +4,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
+import rateLimit from 'express-rate-limit';
 
 // Configuration
 import db from './configs/Database.js';
@@ -38,13 +39,20 @@ try {
   console.log(error);
 }
 
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200,
+  message: 'Melebihi batas request ke server.',
+});
+
 app.use(express.json());
 app.use(
   cors({
     credentials: true,
-    origin: ['http://localhost:5173/', 'http://192.168.1.7:5001/'],
+    origin: 'http://localhost:5173/',
   })
 );
+app.use(limiter);
 app.use(cookieParser());
 app.use(fileUpload());
 app.use('/public', express.static('public'));
