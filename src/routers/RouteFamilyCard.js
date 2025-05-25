@@ -4,12 +4,14 @@ import {
   createFamilyCard,
   deleteFamilyCard,
   updateFamilyCard,
+  getFamilyCard,
 } from '../controllers/FamilyCard.js';
 import { schemaFamilyCard } from '../validations/SchemaFamilyCard.js';
 import verifyToken from '../middlewares/VerivyToken.js';
 
 const router = express.Router();
 
+router.get('/', verifyToken, getFamilyCard);
 router.post(
   '/create/:id',
   verifyToken,

@@ -1,6 +1,18 @@
 import { json } from 'sequelize';
 import FamilyCard from '../models/ModelFamilyCards.js';
 
+export const getFamilyCard = async (req, res) => {
+  try {
+    const familyCard = await FamilyCard.findAndCountAll({
+      attributes: ['uuid', 'family_card_number', 'name', 'nik', 'status'],
+    });
+
+    return res.status(200).json({ familyCard });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+
 export const createFamilyCard = async (req, res) => {
   const { family_card_number, name, nik, status } = req.body;
   const { id } = req.params;
