@@ -1,6 +1,5 @@
 import { DataTypes } from 'sequelize';
 import db from '../configs/Database.js';
-import Users from './ModelUsers.js';
 import CitizensAssocation from './ModelCitizensAssocation.js';
 import Region from './ModelRegion.js';
 
@@ -33,8 +32,8 @@ const Residents = db.define(
     gender: {
       type: DataTypes.ENUM('L', 'P'),
     },
-    status: {
-      type: DataTypes.STRING,
+    status_married: {
+      type: DataTypes.ENUM('menikah', 'belum menikah'),
     },
     religion: {
       type: DataTypes.STRING,
@@ -70,16 +69,6 @@ const Residents = db.define(
   }
 );
 
-Residents.belongsTo(Users, {
-  foreignKey: 'created_by',
-  as: 'creator',
-  onDelete: 'restrict',
-});
-Residents.belongsTo(Users, {
-  foreignKey: 'updated_by',
-  as: 'updater',
-  onDelete: 'restrict',
-});
 Residents.belongsTo(CitizensAssocation, {
   foreignKey: 'rt_rw_id',
   as: 'citizensAsociation',

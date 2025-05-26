@@ -1,6 +1,5 @@
 import { DataTypes } from 'sequelize';
 import db from '../configs/Database.js';
-import Users from './ModelUsers.js';
 
 const Aparatus = db.define(
   'village_aparatus',
@@ -58,21 +57,15 @@ const Aparatus = db.define(
     updated_by: {
       type: DataTypes.STRING,
     },
+    level:{
+      type:DataTypes.INTEGER
+    }
   },
   {
     freezeTableName: true,
   }
 );
 
-Aparatus.belongsTo(Users, {
-  foreignKey: 'created_by',
-  as: 'creator',
-  onDelete: 'restrict',
-});
-Aparatus.belongsTo(Users, {
-  foreignKey: 'updated_by',
-  as: 'updater',
-  onDelete: 'restrict',
-});
+
 
 export default Aparatus;

@@ -1,7 +1,6 @@
 import { DataTypes } from 'sequelize';
 import db from '../configs/Database.js';
 import Region from './ModelRegion.js';
-import Users from './ModelUsers.js';
 
 const CitizensAssocation = db.define(
   'rt_rw',
@@ -25,13 +24,10 @@ const CitizensAssocation = db.define(
       type: DataTypes.INTEGER,
     },
     rt_leader: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
     },
     rw_leader: {
-      type: DataTypes.INTEGER,
-    },
-    rw_leader: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
     },
     total_kk: {
       type: DataTypes.INTEGER,
@@ -57,15 +53,6 @@ CitizensAssocation.belongsTo(Region, {
   as: 'region',
   onDelete: 'cascade',
 });
-CitizensAssocation.belongsTo(Users, {
-  foreignKey: 'created_by',
-  as: 'creator',
-  onDelete: 'restrict',
-});
-CitizensAssocation.belongsTo(Users, {
-  foreignKey: 'updated_by',
-  as: 'updater',
-  onDelete: 'restrict',
-});
+
 
 export default CitizensAssocation;

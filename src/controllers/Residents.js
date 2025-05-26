@@ -1,4 +1,14 @@
 import Residents from '../models/ModelResidents.js';
+import Users from '../models/ModelUsers.js';
+
+export const getResidents = async (req, res) => {
+  try {
+    const residents = await Residents.findAll();
+    return res.status(200).json({ residents });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
 
 export const createResidents = async (req, res) => {
   const {
@@ -12,7 +22,11 @@ export const createResidents = async (req, res) => {
     education,
     work,
     age,
+    citizen_status,
+    rt_rw_id,
+    region_id,
   } = req.body;
+  const { name } = req;
 
   const checkResidents = await Residents.findOne({
     where: {
@@ -28,16 +42,20 @@ export const createResidents = async (req, res) => {
 
   try {
     await Residents.create({
-      nik: nik,
-      no_kk: no_kk,
-      place_birth: place_birth,
-      date_birth: date_birth,
-      gender: gender,
-      status: status,
-      religion: religion,
-      education: education,
-      work: work,
-      age: age,
+      nik,
+      no_kk,
+      place_birth ,
+      date_birth,
+      gender,
+      status,
+      religion,
+      education,
+      work,
+      age,
+      citizen_status,
+      rt_rw_id,
+      region_id,
+      created_by: name,
     });
     return res
       .status(201)
@@ -50,18 +68,22 @@ export const createResidents = async (req, res) => {
 export const updateResidents = async (req, res) => {
   try {
     const { id } = req.params;
-    const {
-      nik: nik,
-      no_kk,
-      place_birth,
-      date_birth,
-      gender,
-      status,
-      religion,
-      education,
-      work,
-      age,
-    } = req.body;
+     const {
+    nik,
+    no_kk,
+    place_birth,
+    date_birth,
+    gender,
+    status,
+    religion,
+    education,
+    work,
+    age,
+    citizen_status,
+    rt_rw_id,
+    region_id,
+  } = req.body;
+  const { name } = req;
 
     const resident = await Residents.findByPk(id);
 
@@ -70,16 +92,20 @@ export const updateResidents = async (req, res) => {
     }
 
     await resident.update({
-      nik: nik,
-      no_kk: no_kk,
-      place_birth: place_birth,
-      date_birth: date_birth,
-      gender: gender,
-      status: status,
-      religion: religion,
-      education: education,
-      work: work,
-      age: age,
+      nik,
+      no_kk,
+      place_birth ,
+      date_birth,
+      gender,
+      status,
+      religion,
+      education,
+      work,
+      age,
+      citizen_status,
+      rt_rw_id,
+      region_id,
+      updated_by: name,
     });
 
     return res

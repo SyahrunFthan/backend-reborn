@@ -31,7 +31,6 @@ export const createNews = async (req, res) => {
     const filename = Date.now() + ext;
     file.mv(`public/News/${filename}`);
 
-    // Pilih file pertama sebagai gambar utama
     if (!selectedImage) {
       selectedImage = filename;
     }

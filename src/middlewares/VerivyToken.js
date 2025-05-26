@@ -35,6 +35,7 @@ const verifyToken = async (req, res, next) => {
 
       req.userId = decoded.userId;
       req.role = user.roles.role_key;
+      req.name = user.fullname;
 
       next();
     });
