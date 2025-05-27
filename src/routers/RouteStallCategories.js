@@ -16,7 +16,7 @@ router.get('/', verifyToken, verifyRole(['admin', 'user']), getStallCategories);
 router.post(
   '/create',
   verifyToken,
-  // verifyRole(['admin']),
+  verifyRole(['admin']),
   validateData(schemaStallCategories),
   createStallCategories
 );

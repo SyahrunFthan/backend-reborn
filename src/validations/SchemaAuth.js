@@ -1,24 +1,25 @@
 import { z } from 'zod';
+import { email } from 'zod/v4';
 
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])[A-Za-z\d\S]{8,}$/;
 
 const loginSchema = z.object({
-  email: z.string().nonempty({ message: 'Email tidak boleh kosong!' }),
+  email: z.string().min(1, 'email tidak boleh kosong!'),
   password: z.string().nonempty({ message: 'Password tidak boleh kosong!' }),
 });
 
 const registerSchema = z
   .object({
     fullname: z.string().nonempty({ message: 'Nama tidak boleh kosong!' }),
-    email: z.string().nonempty({ message: 'Email tidak boleh kosong!' }),
+    email: z
+      .string()
+      .email()
+      .nonempty({ message: 'Email tidak boleh kosong!' }),
     phone: z
       .string()
       .nonempty({ message: 'Nomor telepon tidak boleh kosong!' }),
-    username: z
-      .string()
-      .regex(/^\S+$/, { message: 'Username tidak boleh mengandung spasi' })
-      .nonempty({ message: 'Username tidak boleh kosong!' }),
+    username: z.string().length(16, 'fullname harus tepat 16 karakter '),
     password: z
       .string()
       .regex(passwordRegex, {

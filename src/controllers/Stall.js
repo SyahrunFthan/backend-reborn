@@ -113,14 +113,14 @@ export const createVillageStall = async (req, res) => {
 //Admin & User
 export const updateVillageStall = async (req, res) => {
   const {
-    title,
+    name_stall,
     price,
     name_seller,
     phone,
     address,
     latitude,
     longitude,
-    category_id,
+    stall_category_id,
   } = req.body;
   const { id } = req.params;
 
@@ -130,14 +130,14 @@ export const updateVillageStall = async (req, res) => {
     try {
       await Stalls.update(
         {
-          title: title,
-          price: price,
-          name_seller: name_seller,
-          phone: phone,
-          address: address,
-          latitude: latitude,
-          longitude: longitude,
-          category_id: category_id,
+          name_stall,
+          price,
+          name_seller,
+          phone,
+          address,
+          latitude,
+          longitude,
+          stall_category_id,
         },
         {
           where: {
@@ -175,14 +175,14 @@ export const updateVillageStall = async (req, res) => {
     try {
       await Stalls.update(
         {
-          title: title,
-          price: price,
-          name_seller: name_seller,
-          phone: phone,
-          address: address,
-          latitude: latitude,
-          longitude: longitude,
-          category_id: category_id,
+          name_stall,
+          price,
+          name_seller,
+          phone,
+          address,
+          latitude,
+          longitude,
+          category_id,
           img: filename,
           path_img: pathImg,
         },

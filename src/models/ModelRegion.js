@@ -1,6 +1,5 @@
 import { DataTypes } from 'sequelize';
 import db from '../configs/Database.js';
-import Users from './ModelUsers.js';
 import Aparatus from './ModelAparatus.js';
 
 const Region = db.define(
@@ -54,16 +53,6 @@ const Region = db.define(
   }
 );
 
-Region.belongsTo(Users, {
-  foreignKey: 'created_by',
-  as: 'creator',
-  onDelete: 'restrict',
-});
-Region.belongsTo(Users, {
-  foreignKey: 'updated_by',
-  as: 'updater',
-  onDelete: 'restrict',
-});
 Region.belongsTo(Aparatus, {
   foreignKey: 'leader_id',
   as: 'leader',

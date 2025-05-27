@@ -17,6 +17,17 @@ const Service = db.define(
     name: {
       type: DataTypes.STRING,
     },
+    name_concerned: {
+      type: DataTypes.STRING,
+    },
+    file: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    path_file: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     status: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
@@ -37,13 +48,13 @@ const Service = db.define(
 
 Service.belongsTo(Users, {
   foreignKey: 'created_by',
-  as: 'creater',
+  as: 'created',
   onDelete: 'restrict',
   onUpdate: 'restrict',
 });
 Service.belongsTo(Users, {
   foreignKey: 'updated_by',
-  as: 'updater',
+  as: 'updated',
   onDelete: 'restrict',
   onUpdate: 'restrict',
 });

@@ -1,37 +1,39 @@
 import express from 'express';
 import validateData from '../middlewares/Validation.js';
 import {
-  createVillageStall,
-  updateVillageStall,
-  deleteVillageStall,
-  getStallBySearch,
-} from '../controllers/Stall.js';
-import { schemaStall } from '../validations/SchemaStall.js';
+  createService,
+  getService,
+  updateService,
+  deleteService,
+  getServiceById,
+} from '../controllers/Service.js';
+import { schemaService } from '../validations/SchemaService.js';
 import verifyToken from '../middlewares/VerivyToken.js';
 import verifyRole from '../middlewares/VerifyRole.js';
 
 const router = express.Router();
 
-router.get('/', getStallBySearch);
+router.get('/', getService);
+router.get('/:id', getServiceById);
 router.post(
   '/create',
   verifyToken,
   verifyRole(['admin', 'user']),
-  validateData(schemaStall),
-  createVillageStall
+  validateData(schemaService),
+  createService
 );
 router.patch(
   '/update/:id',
   verifyToken,
   verifyRole(['admin', 'user']),
-  validateData(schemaStall),
-  updateVillageStall
+  validateData(schemaService),
+  updateService
 );
 router.delete(
   '/delete/:id',
   verifyToken,
   verifyRole(['admin', 'user']),
-  deleteVillageStall
+  deleteService
 );
 
 export default router;
