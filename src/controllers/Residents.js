@@ -14,6 +14,7 @@ export const createResidents = async (req, res) => {
   const {
     nik,
     no_kk,
+    name: nameResident,
     place_birth,
     date_birth,
     gender,
@@ -55,6 +56,7 @@ export const createResidents = async (req, res) => {
       citizen_status,
       rt_rw_id,
       region_id,
+      name: nameResident,
       nik: encryptNik,
       no_kk: encryptKK,
       status_married: status,

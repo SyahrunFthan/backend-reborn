@@ -9,8 +9,8 @@ const router = express.Router();
 
 router.post(
   '/create',
-  verifyToken,
-  verifyRole(['admin', 'user']),
+  // verifyToken,
+  // verifyRole(['admin', 'user']),
   validateData(schemaRegion),
   createRegion
 );

@@ -5,7 +5,7 @@ const schemaVillageApparatus = z.object({
     .string()
     .min(16, 'NIK harus 16 karakter')
     .max(16, 'NIK harus 16 karakter'),
-  nama: z.string().min(1, 'Nama tidak boleh kosong'),
+  name: z.string().min(1, 'Nama tidak boleh kosong'),
   place_birth: z.string().min(1, 'Tempat lahir tidak boleh kosong'),
   //   date_birth: z.date(),
   status_married: z.enum(['belum menikah', 'menikah']),

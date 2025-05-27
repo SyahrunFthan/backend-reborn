@@ -18,21 +18,21 @@ router.get('/:id', getVillageApparatusById);
 router.post(
   '/create',
   verifyToken,
-  // verifyRole(['superadmin', 'admin']),
+  verifyRole(['superadmin', 'admin']),
   validateData(schemaVillageApparatus),
   createVillageApparatus
 );
 router.patch(
   '/update/:id_user/:id',
-  // verifyToken,
-  // verifyRole(['superadmin', 'admin']),
+  verifyToken,
+  verifyRole(['superadmin', 'admin']),
   validateData(schemaVillageApparatus),
   updateVillageApparatus
 );
 router.delete(
   '/delete/:id',
   verifyToken,
-  // verifyRole(["superadmin", "admin"]),
+  verifyRole(['superadmin', 'admin']),
   deleteVillageApparatus
 );
 

@@ -3,6 +3,24 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import Roles from '../models/ModelRoles.js';
 import formatPhoneNumber from '../utils/formatPhone.js';
+import Residents from '../models/ModelResidents.js';
+import encrypt from '../utils/encryption.js';
+
+// Check NIK To Register
+export const checkNikForRegister = async (req, res) => {
+  try {
+    const { nik } = req.body;
+    const encryptNik = encrypt(nik);
+    const resident = await Residents.findOne({ where: { nik: encryptNik } });
+
+    if (!resident)
+      return res.status(404).json({ message: 'NIK tidak ditemukan' });
+
+    return res.status(200).json(resident);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
 
 // Login User For Mobile App (Fix)
 export const login = async (req, res) => {
@@ -53,7 +71,7 @@ export const login = async (req, res) => {
 
 // Register User For Mobile App (Fix)
 export const register = async (req, res) => {
-  const { fullname, email, phone, username, password } = req.body;
+  const { fullname, email, phone, username, password, resident_id } = req.body;
 
   try {
     const checkEmail = await Users.findOne({ where: { email } });
@@ -72,6 +90,7 @@ export const register = async (req, res) => {
       fullname,
       email,
       username,
+      resident_id,
       phone: phoneNumber,
       password: hashedPassword,
       role_id: 3,

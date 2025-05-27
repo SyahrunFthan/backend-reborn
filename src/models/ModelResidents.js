@@ -23,6 +23,10 @@ const Residents = db.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     place_birth: {
       type: DataTypes.STRING,
     },
@@ -48,7 +52,8 @@ const Residents = db.define(
       type: DataTypes.INTEGER,
     },
     citizen_status: {
-      type: DataTypes.STRING, // Migrasi, Mutasi, Penduduk Lokal
+      type: DataTypes.ENUM('Migrasi', 'Mutasi', 'Penduduk Lokal', 'Lainnya'), // Migrasi, Mutasi, Penduduk Lokal
+      defaultValue: 'Penduduk Lokal',
     },
     rt_rw_id: {
       type: DataTypes.STRING,

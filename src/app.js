@@ -8,7 +8,7 @@ import rateLimit from 'express-rate-limit';
 
 // Configuration
 import db from './configs/Database.js';
-import createModel from './models/ModelCitizensAssocation.js';
+// import createModel from './models/ModelResidents.js';
 
 // Router API
 import RouteStallCategories from './routers/RouteStallCategories.js';
@@ -36,8 +36,8 @@ const app = express();
 
 try {
   await db.authenticate();
-  // await db.sync({ alter: true });
   console.log('Database connected');
+  // await db.sync({ alter: true });
   // createModel.sync({ alter: true });
 } catch (error) {
   console.log(error);

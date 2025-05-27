@@ -1,6 +1,7 @@
 import VillageApparatus from '../models/ModelAparatus.js';
 import path from 'path';
 import fs from 'fs';
+import encrypt from '../utils/encryption.js';
 
 export const getVillageApparatus = async (req, res) => {
   try {
@@ -57,7 +58,7 @@ export const getVillageApparatusById = async (req, res) => {
 export const createVillageApparatus = async (req, res) => {
   const {
     nik,
-    nama,
+    name: nameAparatur,
     place_birth,
     date_birth,
     status_married,
@@ -94,20 +95,21 @@ export const createVillageApparatus = async (req, res) => {
     'host'
   )}/public/village-apparatus/${filename}`;
 
+  const encryptNik = encrypt(nik);
   try {
     await VillageApparatus.create({
-      nik,
-      name: nama,
       place_birth,
       status_married,
       address,
       task,
       position,
+      level,
+      nik: encryptNik,
+      name: nameAparatur,
       date_birth: new Date(date_birth),
       img: filename,
       path_img: pathImg,
       created_by: name,
-      level,
     });
 
     return res.status(201).json({
