@@ -1,5 +1,5 @@
 import Residents from '../models/ModelResidents.js';
-import Users from '../models/ModelUsers.js';
+import encrypt from '../utils/encryption.js';
 
 export const getResidents = async (req, res) => {
   try {
@@ -40,14 +40,14 @@ export const createResidents = async (req, res) => {
       .json({ message: 'nik sudah terdatar di table penduduk' });
   }
 
+  const encryptNik = encrypt(nik);
+  const encryptKK = encrypt(no_kk);
+
   try {
     await Residents.create({
-      nik,
-      no_kk,
       place_birth,
       date_birth,
       gender,
-      status_married: status,
       religion,
       education,
       work,
@@ -55,6 +55,9 @@ export const createResidents = async (req, res) => {
       citizen_status,
       rt_rw_id,
       region_id,
+      nik: encryptNik,
+      no_kk: encryptKK,
+      status_married: status,
       created_by: name,
     });
     return res

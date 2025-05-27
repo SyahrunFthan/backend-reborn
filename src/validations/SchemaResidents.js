@@ -17,7 +17,7 @@ const schemaResidents = z.object({
   religion: z.string().nonempty({ message: 'Agama tidak boleh kosong!' }),
   education: z.string().nonempty({ message: 'Pendidikan tidak boleh kosong!' }),
   work: z.string().nonempty({ message: 'Pekerjaan tidak boleh kosong!' }),
-  age: z.string().nonempty({ message: 'Usia harus berupa angka positif!' }),
+  age: z.string().nonempty({ message: 'Usia tidak boleh kosong!' }),
 });
 
 export { schemaResidents };

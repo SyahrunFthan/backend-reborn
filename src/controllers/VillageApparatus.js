@@ -72,7 +72,6 @@ export const createVillageApparatus = async (req, res) => {
     return res.status(404).json({ message: 'tidak ada ditemukan' });
   }
 
-  // Memastikan file diunggah
   if (!req.files || !req.files.file) {
     return res.status(422).json({ message: 'Gambar harus diisi!' });
   }
@@ -83,7 +82,6 @@ export const createVillageApparatus = async (req, res) => {
   const allowedTypes = ['.png', '.jpg', '.jpeg'];
   const filename = Date.now() + ext;
 
-  // Validasi tipe file dan ukuran
   if (!allowedTypes.includes(ext.toLowerCase())) {
     return res.status(422).json({ message: 'Format gambar tidak didukung!' });
   }
@@ -91,23 +89,21 @@ export const createVillageApparatus = async (req, res) => {
     return res.status(422).json({ message: 'Ukuran gambar terlalu besar!' });
   }
 
-  // Menyimpan file
   await file.mv(`public/village-apparatus/${filename}`);
   const pathImg = `${req.protocol}://${req.get(
     'host'
   )}/public/village-apparatus/${filename}`;
 
   try {
-    // Menyimpan data ke database
     await VillageApparatus.create({
       nik,
       name: nama,
       place_birth,
-      date_birth: new Date(date_birth),
       status_married,
       address,
       task,
       position,
+      date_birth: new Date(date_birth),
       img: filename,
       path_img: pathImg,
       created_by: name,

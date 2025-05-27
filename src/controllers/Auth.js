@@ -18,11 +18,11 @@ export const login = async (req, res) => {
       },
     });
     if (!user)
-      return res.status(400).json({ message: 'Akun anda tidak ditemukan!' });
+      return res.status(400).json({ email: 'Akun anda tidak ditemukan!' });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
-      return res.status(400).json({ message: 'Password anda salah!' });
+      return res.status(400).json({ password: 'Password anda salah!' });
 
     const token = jwt.sign(
       { userId: user.uuid },
@@ -97,6 +97,7 @@ export const logout = async (req, res) => {
   }
 };
 
+// Remove Token For Mobile
 export const removeToken = async (req, res) => {
   try {
     const { id } = req.params;
