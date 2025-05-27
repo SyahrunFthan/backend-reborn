@@ -48,6 +48,83 @@ export const getStallBySearch = async (req, res) => {
   }
 };
 
+export const getStallById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const response = await Stalls.findOne({
+      where: {
+        uuid: id,
+      },
+      attributes: [
+        'uuid',
+        'name_stall',
+        'price',
+        'name_seller',
+        'phone',
+        'address',
+        'path_img',
+        'img',
+        'latitude',
+        'longitude',
+        'description',
+        'stall_category_id',
+        'user_id',
+      ],
+      include: [
+        {
+          model: StallCategories,
+          as: 'stallCategories',
+          foreignKey: 'stall_category_id',
+          attributes: ['title'],
+        },
+        {
+          model: Users,
+          as: 'users',
+          foreignKey: 'user_id',
+          attributes: ['fullname'],
+        },
+      ],
+    });
+
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+
+export const getStallByUser = async (req, res) => {
+  try {
+    const { userId } = req;
+
+    const response = await Stalls.findAll({
+      attributes: [
+        'uuid',
+        'name_stall',
+        'price',
+        'name_seller',
+        'phone',
+        'address',
+        'path_img',
+        'img',
+        'latitude',
+        'longitude',
+        'description',
+        'stall_category_id',
+        'user_id',
+      ],
+      order: [['name_stall', 'ASC']],
+      where: {
+        user_id: userId,
+      },
+    });
+
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+
 // Admin & User
 export const createVillageStall = async (req, res) => {
   const {
@@ -208,11 +285,11 @@ export const deleteVillageStall = async (req, res) => {
     const stall = await Stalls.findByPk(id);
 
     if (stall.img !== null) {
-      fs.unlinkSync(`public/villageStall/${Stalls.img}`);
+      fs.unlinkSync(`public/village-stall/${stall.img}`);
     }
 
     stall.destroy();
-    return res.status(200).json({ message: 'Berhasil menghapus stall' });
+    return res.status(200).json({ message: 'Berhasil menghapus lapak' });
   } catch (error) {
     return res.status(500).json(error);
   }

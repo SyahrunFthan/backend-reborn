@@ -5,6 +5,8 @@ import {
   updateVillageStall,
   deleteVillageStall,
   getStallBySearch,
+  getStallById,
+  getStallByUser,
 } from '../controllers/Stall.js';
 import { schemaStall } from '../validations/SchemaStall.js';
 import verifyToken from '../middlewares/VerivyToken.js';
@@ -12,7 +14,9 @@ import verifyRole from '../middlewares/VerifyRole.js';
 
 const router = express.Router();
 
-router.get('/', getStallBySearch);
+router.get('/', verifyToken, getStallBySearch);
+router.get('/user', verifyToken, verifyRole(['user']), getStallByUser);
+router.get('/:id', verifyToken, getStallById);
 router.post(
   '/create',
   verifyToken,

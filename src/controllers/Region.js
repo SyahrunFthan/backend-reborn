@@ -3,39 +3,32 @@ import VillageApparatus from '../models/ModelAparatus.js';
 
 export const createRegion = async (req, res) => {
   const {
-    name,
+    name: nameRegion,
     total_population,
-    hectar_area,
+    hectare_area,
     geo_polygon,
     centroid_lat,
     centroid_long,
     map_color,
+    leader_id,
   } = req.body;
-  const { userId } = req;
-
-  const checkLeader = await VillageApparatus.findOne({
-    where: {
-      level: 1,
-    },
-  });
-
-  const leader_id = checkLeader.uuid;
+  const { name } = req;
 
   try {
     await Region.create({
-      name,
       leader_id,
       total_population,
-      hectar_area,
+      hectare_area,
       geo_polygon,
       centroid_lat,
       centroid_long,
       map_color,
-      created_by: userId,
+      name: nameRegion,
+      created_by: name,
     });
 
     return res.status(201).json({ message: 'Berhasil Menambah Region' });
   } catch (error) {
-    return res.status(500).json(error);
+    return res.status(500).json({ error });
   }
 };

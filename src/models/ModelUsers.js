@@ -1,7 +1,6 @@
 import { DataTypes } from 'sequelize';
 import db from '../configs/Database.js';
 import Roles from './ModelRoles.js';
-import Region from './ModelRegion.js';
 import Residents from './ModelResidents.js';
 
 const Users = db.define(
@@ -42,9 +41,6 @@ const Users = db.define(
     role_id: {
       type: DataTypes.INTEGER,
     },
-    region_id: {
-      type: DataTypes.STRING,
-    },
     resident_id: {
       type: DataTypes.STRING,
     },
@@ -57,11 +53,6 @@ const Users = db.define(
 Users.belongsTo(Roles, {
   foreignKey: 'role_id',
   as: 'roles',
-  onDelete: 'restrict',
-});
-Users.belongsTo(Region, {
-  foreignKey: 'region_id',
-  as: 'region',
   onDelete: 'restrict',
 });
 Users.belongsTo(Residents, {

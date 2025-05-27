@@ -19,7 +19,7 @@ const registerSchema = z
     phone: z
       .string()
       .nonempty({ message: 'Nomor telepon tidak boleh kosong!' }),
-    username: z.string().length(16, 'fullname harus tepat 16 karakter '),
+    username: z.string().min(5, 'Username harus tepat 5 karakter '),
     password: z
       .string()
       .regex(passwordRegex, {
@@ -37,4 +37,8 @@ const registerSchema = z
     path: ['confirmPassword'],
   });
 
-export { loginSchema, registerSchema };
+const checkNikSchema = z.object({
+  nik: z.string().min(1, 'NIK tidak boleh kosong!'),
+});
+
+export { loginSchema, registerSchema, checkNikSchema };
