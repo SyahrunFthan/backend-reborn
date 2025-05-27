@@ -3,6 +3,8 @@ import validateData from '../middlewares/Validation.js';
 import {
   createVillageApparatus,
   deleteVillageApparatus,
+  getVillageApparatus,
+  getVillageApparatusById,
   updateVillageApparatus,
 } from '../controllers/VillageApparatus.js';
 import { schemaVillageApparatus } from '../validations/SchemaVillageApparatus.js';
@@ -11,9 +13,11 @@ import verifyRole from '../middlewares/VerifyRole.js';
 
 const router = express.Router();
 
+router.get('/', getVillageApparatus);
+router.get('/:id', getVillageApparatusById);
 router.post(
-  '/create/:id',
-  // verifyToken,
+  '/create',
+  verifyToken,
   // verifyRole(['superadmin', 'admin']),
   validateData(schemaVillageApparatus),
   createVillageApparatus
@@ -27,7 +31,7 @@ router.patch(
 );
 router.delete(
   '/delete/:id',
-  // verifyToken,
+  verifyToken,
   // verifyRole(["superadmin", "admin"]),
   deleteVillageApparatus
 );

@@ -1,10 +1,11 @@
 import { z } from 'zod';
+import { email } from 'zod/v4';
 
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])[A-Za-z\d\S]{8,}$/;
 
 const loginSchema = z.object({
-  username: z.string().min(1, 'username tidak boleh kosong!'),
+  email: z.string().min(1, 'email tidak boleh kosong!'),
   password: z.string().nonempty({ message: 'Password tidak boleh kosong!' }),
 });
 

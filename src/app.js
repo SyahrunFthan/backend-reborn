@@ -21,6 +21,8 @@ import RouteResidents from './routers/RouteResidents.js';
 import RouteNews from './routers/RouteNews.js';
 import RouteVillageApparatus from './routers/RouteVillageApparatus.js';
 import RouteService from './routers/RouteService.js';
+import RouteCitizenAssociation from './routers/RouteCitizenAssociation.js';
+import RouteRegion from './routers/RouteRegion.js';
 
 // import { readFile } from 'fs/promises';
 
@@ -71,6 +73,8 @@ app.use('/residents', RouteResidents);
 app.use('/news', RouteNews);
 app.use('/village-apparatus', RouteVillageApparatus);
 app.use('/service', RouteService);
+app.use('/citizen-association', RouteCitizenAssociation);
+app.use('/region', RouteRegion);
 
 app.listen(5001, () => {
   console.log('Server running at port 5001....');

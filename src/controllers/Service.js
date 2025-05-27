@@ -5,11 +5,18 @@ import path from 'path';
 //  User
 export const getService = async (req, res) => {
   try {
-    const service = await Service.findAll({
-      attributes: ['uuid', 'name', 'status', 'name_concerned', 'file'],
+    const response = await Service.findAll({
+      attributes: [
+        'uuid',
+        'name',
+        'status',
+        'name_concerned',
+        'file',
+        'path_file',
+      ],
     });
 
-    return res.status(200).json({ service });
+    return res.status(200).json({ response });
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -19,9 +26,18 @@ export const getService = async (req, res) => {
 export const getServiceById = async (req, res) => {
   const { id } = req.params;
   try {
-    const service = await Service.findByPk(id);
+    const response = await Service.findByPk(id, {
+      attributes: [
+        'uuid',
+        'name',
+        'status',
+        'name_concerned',
+        'file',
+        'path_file',
+      ],
+    });
 
-    return res.status(200).json({ service });
+    return res.status(200).json({ response });
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -107,6 +123,7 @@ export const updateService = async (req, res) => {
           status,
           path_file: pathFile,
           file: fileName,
+          status,
           updated_by: userId,
         },
         {
@@ -116,10 +133,10 @@ export const updateService = async (req, res) => {
         }
       );
 
-      return res.status(200).json({ message: 'Surat masuk berhasil di ubah.' });
+      return res.status(200).json({ message: 'service berhasil di ubah.' });
     } catch (error) {
       return res.status(500).json({
-        message: 'Terjadi kesalahan saat mengubah surat masuk.',
+        message: 'Terjadi kesalahan saat mengubah service.',
         error,
       });
     }

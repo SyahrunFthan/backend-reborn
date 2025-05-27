@@ -46,17 +46,17 @@ const Service = db.define(
   }
 );
 
-Service.belongsTo(Users,{
-  foreignKey:"created_by",
-  as:"created",
-  onDelete:"restrict",
-  onUpdate:"restrict"
-})
-Service.belongsTo(Users,{
-  foreignKey:"updated_by",
-  as:"updated",
-  onDelete:"restrict",
-  onUpdate:"restrict"
-})
+Service.belongsTo(Users, {
+  foreignKey: 'created_by',
+  as: 'created',
+  onDelete: 'restrict',
+  onUpdate: 'restrict',
+});
+Service.belongsTo(Users, {
+  foreignKey: 'updated_by',
+  as: 'updated',
+  onDelete: 'restrict',
+  onUpdate: 'restrict',
+});
 
 export default Service;

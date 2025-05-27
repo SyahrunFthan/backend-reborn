@@ -6,11 +6,11 @@ import formatPhoneNumber from '../utils/formatPhone.js';
 
 // Login User For Mobile App (Fix)
 export const login = async (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
   try {
     const user = await Users.findOne({
-      where: { username },
+      where: { email },
       include: {
         model: Roles,
         as: 'roles',

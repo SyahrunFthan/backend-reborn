@@ -44,10 +44,10 @@ export const createResidents = async (req, res) => {
     await Residents.create({
       nik,
       no_kk,
-      place_birth ,
+      place_birth,
       date_birth,
       gender,
-      status,
+      status_married: status,
       religion,
       education,
       work,
@@ -68,22 +68,22 @@ export const createResidents = async (req, res) => {
 export const updateResidents = async (req, res) => {
   try {
     const { id } = req.params;
-     const {
-    nik,
-    no_kk,
-    place_birth,
-    date_birth,
-    gender,
-    status,
-    religion,
-    education,
-    work,
-    age,
-    citizen_status,
-    rt_rw_id,
-    region_id,
-  } = req.body;
-  const { name } = req;
+    const {
+      nik,
+      no_kk,
+      place_birth,
+      date_birth,
+      gender,
+      status,
+      religion,
+      education,
+      work,
+      age,
+      citizen_status,
+      rt_rw_id,
+      region_id,
+    } = req.body;
+    const { name } = req;
 
     const resident = await Residents.findByPk(id);
 
@@ -94,10 +94,10 @@ export const updateResidents = async (req, res) => {
     await resident.update({
       nik,
       no_kk,
-      place_birth ,
+      place_birth,
       date_birth,
       gender,
-      status,
+      status_married: status,
       religion,
       education,
       work,

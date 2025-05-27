@@ -16,7 +16,7 @@ router.get('/', getResidents);
 router.post(
   '/create',
   verifyToken,
-  //   verifyRole(["admin"]),
+  verifyRole(['admin']),
   validateData(schemaResidents),
   createResidents
 );
@@ -31,7 +31,6 @@ router.delete(
   '/delete/:id',
   verifyToken,
   verifyRole(['admin']),
-  validateData(schemaResidents),
   deleteResidents
 );
 

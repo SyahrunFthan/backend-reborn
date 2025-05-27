@@ -2,20 +2,75 @@ import VillageApparatus from '../models/ModelAparatus.js';
 import path from 'path';
 import fs from 'fs';
 
+export const getVillageApparatus = async (req, res) => {
+  try {
+    const response = await VillageApparatus.findAll({
+      attributes: [
+        'uuid',
+        'nik',
+        'name',
+        'place_birth',
+        'date_birth',
+        'status_married',
+        'task',
+        'position',
+        'level',
+        'address',
+        'img',
+        'path_img',
+      ],
+    });
+
+    return res.status(200).json({ response });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+
+export const getVillageApparatusById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const response = await VillageApparatus.findByPk(id, {
+      attributes: [
+        'uuid',
+        'nik',
+        'name',
+        'place_birth',
+        'date_birth',
+        'status_married',
+        'task',
+        'position',
+        'level',
+        'address',
+        'img',
+        'path_img',
+      ],
+    });
+
+    return res.status(200).json({ response });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+
 // Super Admin & Admin
 export const createVillageApparatus = async (req, res) => {
   const {
     nik,
-    name,
+    nama,
     place_birth,
     date_birth,
     status_married,
     task,
     address,
     position,
+    level,
   } = req.body;
 
-  const { id } = req.params;
+  const { name } = req;
+  if (!name) {
+    return res.status(404).json({ message: 'tidak ada ditemukan' });
+  }
 
   // Memastikan file diunggah
   if (!req.files || !req.files.file) {
@@ -46,7 +101,7 @@ export const createVillageApparatus = async (req, res) => {
     // Menyimpan data ke database
     await VillageApparatus.create({
       nik,
-      name,
+      name: nama,
       place_birth,
       date_birth: new Date(date_birth),
       status_married,
@@ -55,7 +110,8 @@ export const createVillageApparatus = async (req, res) => {
       position,
       img: filename,
       path_img: pathImg,
-      created_by: id,
+      created_by: name,
+      level,
     });
 
     return res.status(201).json({
@@ -69,16 +125,18 @@ export const createVillageApparatus = async (req, res) => {
 export const updateVillageApparatus = async (req, res) => {
   const {
     nik,
-    name,
+    nama,
     place_birth,
     date_birth,
     status_married,
     task,
     address,
     position,
+    level,
   } = req.body;
 
-  const { id, id_user } = req.params;
+  const { id } = req.params;
+  const { name } = req;
 
   const villageApparatus = await VillageApparatus.findByPk(id);
 
@@ -87,14 +145,15 @@ export const updateVillageApparatus = async (req, res) => {
       await villageApparatus.update(
         {
           nik,
-          name,
+          name: nama,
           place_birth,
           date_birth,
           status_married,
           task,
           address,
           position,
-          updated_by: id_user,
+          updated_by: name,
+          level,
         },
         {
           where: {
@@ -143,6 +202,7 @@ export const updateVillageApparatus = async (req, res) => {
           updated_by: id_user,
           img: filename,
           path_img: pathImg,
+          level,
         },
         {
           where: {

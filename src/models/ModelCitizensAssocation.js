@@ -54,5 +54,4 @@ CitizensAssocation.belongsTo(Region, {
   onDelete: 'cascade',
 });
 
-
 export default CitizensAssocation;

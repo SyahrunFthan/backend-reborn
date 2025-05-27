@@ -57,15 +57,13 @@ const Aparatus = db.define(
     updated_by: {
       type: DataTypes.STRING,
     },
-    level:{
-      type:DataTypes.INTEGER
-    }
+    level: {
+      type: DataTypes.INTEGER,
+    },
   },
   {
     freezeTableName: true,
   }
 );
-
-
 
 export default Aparatus;
