@@ -44,6 +44,10 @@ const Users = db.define(
     resident_id: {
       type: DataTypes.STRING,
     },
+    is_active: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   },
   {
     freezeTableName: true,

@@ -5,6 +5,40 @@ import Roles from '../models/ModelRoles.js';
 import formatPhoneNumber from '../utils/formatPhone.js';
 import Residents from '../models/ModelResidents.js';
 import encrypt from '../utils/encryption.js';
+import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
+import generateOTP from '../utils/generateOtp.js';
+dotenv.config();
+
+// Mobile
+export const sendOtpToEmail = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const otp = generateOTP();
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Kode OTP Akun APP Desa',
+      text: `Kode OTP Anda: ${otp}`,
+      html: `<p>Kode OTP Anda adalah: <b>${otp}</b></p>`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    return res.status(200).json({ message: 'OTP Berhasil Terkirim', otp });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
 
 // Check NIK To Register
 export const checkNikForRegister = async (req, res) => {
@@ -91,6 +125,7 @@ export const register = async (req, res) => {
       email,
       username,
       resident_id,
+      is_active: true,
       phone: phoneNumber,
       password: hashedPassword,
       role_id: 3,

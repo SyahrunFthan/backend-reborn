@@ -1,5 +1,4 @@
 import Region from '../models/ModelRegion.js';
-import VillageApparatus from '../models/ModelAparatus.js';
 
 export const createRegion = async (req, res) => {
   const {
