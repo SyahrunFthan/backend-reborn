@@ -17,6 +17,14 @@ const Service = db.define(
     title: {
       type: DataTypes.STRING,
     },
+    file: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    path_file: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     status: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
