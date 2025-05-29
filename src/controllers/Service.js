@@ -48,10 +48,30 @@ export const createService = async (req, res) => {
   const { title, type_service } = req.body;
   const { name } = req;
 
+  if (!req.files) return res.status(422).json({ file: 'File wajib diunggah.' });
+
+  const file = req.files.file;
+  const fileSize = file.data.length;
+  const ext = path.extname(file.name);
+  const allowedTypes = ['.pdf'];
+  const filename = Date.now() + ext;
+
+  if (!allowedTypes.includes(ext.toLowerCase()))
+    return res.status(422).json({ message: 'Format file tidak di dukung!' });
+
+  if (fileSize > 3000000)
+    return res.status(422).json({ message: 'Ukuran file max 3mb' });
+
+  const pathFile = `${req.protocol}://${req.get(
+    'host'
+  )}/public/service/${filename}`;
+
   try {
     await Service.create({
       type_service,
       title,
+      file: filename,
+      path_file: pathFile,
       created_by: name,
     });
 
@@ -64,29 +84,84 @@ export const createService = async (req, res) => {
 // Admin
 export const updateService = async (req, res) => {
   const { title, status, type_service } = req.body;
-  const { name } = req;
   const { id } = req.params;
+  const { name } = req;
 
-  try {
-    await Service.update(
-      {
-        title,
-        status,
-        type_service,
-        updated_by: name,
-      },
-      {
-        where: {
-          uuid: id,
-        },
+  if (req.files) {
+    try {
+      const file = req.files.file;
+      const ext = path.extname(file.name);
+      const fileSize = file.data.length;
+      const allowedFileTypes = ['.pdf'];
+
+      if (!allowedFileTypes.includes(ext.toLowerCase()))
+        return res
+          .status(422)
+          .json({ file: 'Format file tidak didukung, harus PDF.' });
+
+      if (fileSize > 3000000)
+        return res
+          .status(422)
+          .json({ file: 'Ukuran file terlalu besar, maksimal 3MB.' });
+
+      const fileName = Date.now() + ext;
+      const pathFile = `${req.protocol}://${req.get(
+        'host'
+      )}/public/service/${fileName}`;
+
+      file.mv(`public/service/${fileName}`);
+
+      const service = await Service.findByPk(id);
+
+      if (service.file !== null) {
+        fs.unlinkSync(`public/service/${service.file}`);
       }
-    );
-    return res.status(200).json({ message: 'Surat masuk berhasil di ubah.' });
-  } catch (error) {
-    return res.status(500).json({
-      message: 'Terjadi kesalahan saat mengubah surat masuk.',
-      error,
-    });
+
+      await service.update(
+        {
+          title,
+          status,
+          type_service,
+          path_file: pathFile,
+          file: fileName,
+          updated_by: name,
+        },
+        {
+          where: {
+            uuid: id,
+          },
+        }
+      );
+
+      return res.status(200).json({ message: 'service berhasil di ubah.' });
+    } catch (error) {
+      return res.status(500).json({
+        message: 'Terjadi kesalahan saat mengubah service.',
+        error,
+      });
+    }
+  } else {
+    try {
+      await Service.update(
+        {
+          title,
+          status,
+          type_service,
+          updated_by: userId,
+        },
+        {
+          where: {
+            uuid: id,
+          },
+        }
+      );
+      return res.status(200).json({ message: 'Surat masuk berhasil di ubah.' });
+    } catch (error) {
+      return res.status(500).json({
+        message: 'Terjadi kesalahan saat mengubah surat masuk.',
+        error,
+      });
+    }
   }
 };
 
