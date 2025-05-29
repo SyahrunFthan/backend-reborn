@@ -1,4 +1,4 @@
-import { stat } from 'fs';
+import { title } from 'process';
 import Service from '../models/ModelServices.js';
 import path from 'path';
 
@@ -45,8 +45,8 @@ export const getServiceById = async (req, res) => {
 
 // user
 export const createService = async (req, res) => {
-  const { nama } = req.body;
-  const { userId, name } = req;
+  const { title, type_service } = req.body;
+  const { name } = req;
 
   if (!req.files) return res.status(422).json({ file: 'File wajib diunggah.' });
 
@@ -68,11 +68,11 @@ export const createService = async (req, res) => {
 
   try {
     await Service.create({
-      name: nama,
-      name_concerned: name,
+      type_service,
+      title,
       file: filename,
       path_file: pathFile,
-      created_by: userId,
+      created_by: name,
     });
 
     return res.status(201).json({ message: 'berhasil menambahkan service' });
@@ -83,9 +83,9 @@ export const createService = async (req, res) => {
 
 // Admin
 export const updateService = async (req, res) => {
-  const { nama, status } = req.body;
+  const { title, status, type_service } = req.body;
   const { id } = req.params;
-  const { userId } = req;
+  const { name } = req;
 
   if (req.files) {
     try {
@@ -119,12 +119,12 @@ export const updateService = async (req, res) => {
 
       await service.update(
         {
-          name: nama,
+          title,
           status,
+          type_service,
           path_file: pathFile,
           file: fileName,
-          status,
-          updated_by: userId,
+          updated_by: name,
         },
         {
           where: {
@@ -144,8 +144,9 @@ export const updateService = async (req, res) => {
     try {
       await Service.update(
         {
-          name: nama,
+          title,
           status,
+          type_service,
           updated_by: userId,
         },
         {

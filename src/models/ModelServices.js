@@ -14,10 +14,7 @@ const Service = db.define(
         notEmpty: true,
       },
     },
-    name: {
-      type: DataTypes.STRING,
-    },
-    name_concerned: {
+    title: {
       type: DataTypes.STRING,
     },
     file: {
@@ -32,6 +29,9 @@ const Service = db.define(
       type: DataTypes.BOOLEAN,
       allowNull: true,
       defaultValue: true,
+    },
+    type_service: {
+      type: DataTypes.ENUM('umum', 'penduduk', 'pertanahan', 'lainnya'),
     },
     created_by: {
       type: DataTypes.STRING,
