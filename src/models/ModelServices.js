@@ -14,24 +14,16 @@ const Service = db.define(
         notEmpty: true,
       },
     },
-    name: {
+    title: {
       type: DataTypes.STRING,
-    },
-    name_concerned: {
-      type: DataTypes.STRING,
-    },
-    file: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    path_file: {
-      type: DataTypes.STRING,
-      allowNull: false,
     },
     status: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
       defaultValue: true,
+    },
+    type_service: {
+      type: DataTypes.ENUM('umum', 'penduduk', 'pertanahan', 'lainnya'),
     },
     created_by: {
       type: DataTypes.STRING,
