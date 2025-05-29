@@ -6,6 +6,7 @@ import {
   logout,
   register,
   removeToken,
+  sendOtpToEmail,
 } from '../controllers/Auth.js';
 import {
   checkNikSchema,
@@ -16,6 +17,7 @@ import verifyToken from '../middlewares/VerivyToken.js';
 
 const router = express.Router();
 
+router.post('/send-otp', validateData(registerSchema), sendOtpToEmail);
 router.post('/login', validateData(loginSchema), login);
 router.post('/register', validateData(registerSchema), register);
 router.post('/check-nik', validateData(checkNikSchema), checkNikForRegister);
