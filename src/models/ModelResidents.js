@@ -76,7 +76,7 @@ const Residents = db.define(
 
 Residents.belongsTo(CitizensAssocation, {
   foreignKey: 'rt_rw_id',
-  as: 'citizensAsociation',
+  as: 'rt_rw',
   onDelete: 'restrict',
 });
 Residents.belongsTo(Region, {
