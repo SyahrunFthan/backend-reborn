@@ -1,18 +1,30 @@
-import { title } from 'process';
 import Service from '../models/ModelServices.js';
 import path from 'path';
+import Users from '../models/ModelUsers.js';
 
-//  User
+// Admin & User
 export const getService = async (req, res) => {
   try {
     const response = await Service.findAll({
       attributes: [
         'uuid',
-        'name',
+        'title',
         'status',
         'type_service',
         'file',
         'path_file',
+      ],
+      include: [
+        {
+          model: Users,
+          as: 'created',
+          attributes: ['uuid', 'fullname'],
+        },
+        {
+          model: Users,
+          as: 'updated',
+          attributes: ['uuid', 'fullname'],
+        },
       ],
     });
 
@@ -21,6 +33,7 @@ export const getService = async (req, res) => {
     return res.status(500).json(error);
   }
 };
+
 
 export const getServiceByType = async (req, res) => {
   try {
@@ -49,6 +62,13 @@ export const getServiceById = async (req, res) => {
         'file',
         'path_file',
       ],
+      include: [
+        {
+          model: Users,
+          as: 'created',
+          attributes: ['uuid', 'fullname'],
+        },
+      ],
     });
 
     return res.status(200).json({ response });
@@ -57,10 +77,10 @@ export const getServiceById = async (req, res) => {
   }
 };
 
-// user
+// User
 export const createService = async (req, res) => {
   const { title, type_service } = req.body;
-  const { name } = req;
+  const { userId } = req;
 
   if (!req.files) return res.status(422).json({ file: 'File wajib diunggah.' });
 
@@ -95,7 +115,7 @@ export const createService = async (req, res) => {
       type_service,
       file: filename,
       path_file: pathFile,
-      created_by: name,
+      created_by: userId,
     });
 
     return res.status(201).json({ message: 'berhasil menambahkan service' });
@@ -108,7 +128,7 @@ export const createService = async (req, res) => {
 export const updateService = async (req, res) => {
   const { title, status, type_service } = req.body;
   const { id } = req.params;
-  const { name } = req;
+  const { userId } = req;
 
   if (req.files) {
     try {
@@ -147,7 +167,7 @@ export const updateService = async (req, res) => {
           type_service,
           path_file: pathFile,
           file: fileName,
-          updated_by: name,
+          updated_by: userId,
         },
         {
           where: {
