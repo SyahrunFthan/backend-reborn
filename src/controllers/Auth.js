@@ -50,6 +50,11 @@ export const checkNikForRegister = async (req, res) => {
     if (!resident)
       return res.status(404).json({ message: 'NIK tidak ditemukan' });
 
+    const user = await Users.findAll({ where: { resident_id: resident.uuid } });
+
+    if (user.length > 0)
+      return res.status(409).json({ message: 'Anda sudah mempunyai akun.' });
+
     return res.status(200).json(resident);
   } catch (error) {
     return res.status(500).json(error);

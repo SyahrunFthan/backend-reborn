@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 const schemaResidents = z.object({
   nik: z.string().nonempty({ message: 'NIK tidak boleh kosong!' }),
+  name: z.string().nonempty({ message: 'Nama tidak boleh kosong!' }),
   no_kk: z.string().nonempty({ message: 'Nomor KK tidak boleh kosong!' }),
   place_birth: z
     .string()
