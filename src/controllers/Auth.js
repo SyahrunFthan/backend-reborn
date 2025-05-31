@@ -77,6 +77,9 @@ export const login = async (req, res) => {
     if (!user)
       return res.status(400).json({ email: 'Akun anda tidak ditemukan!' });
 
+    if (user.roles.role_key !== 'user')
+      return res.status(409).json({ email: 'Akun anda tidak ditemukan!' });
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(400).json({ password: 'Password anda salah!' });
