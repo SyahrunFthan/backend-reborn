@@ -1,8 +1,9 @@
 import { DataTypes } from 'sequelize';
 import db from '../configs/Database.js';
+import Service from './ModelServices.js';
 
-const Service = db.define(
-  'services',
+const SubmissionService = db.define(
+  'submission_services',
   {
     uuid: {
       type: DataTypes.STRING,
@@ -13,10 +14,22 @@ const Service = db.define(
         notEmpty: true,
       },
     },
-    title: {
+    service_id: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
-    file: {
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    nik: {
+      type: DataTypes.CHAR(20),
+      allowNull: false,
+    },
+    description: {
+      type: DataTypes.TEXT,
+    },
+    file_name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -24,19 +37,9 @@ const Service = db.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    status: {
+    is_signed: {
       type: DataTypes.BOOLEAN,
-      allowNull: true,
-      defaultValue: true,
-    },
-    type_service: {
-      type: DataTypes.ENUM(
-        'umum',
-        'penduduk',
-        'pernikahan',
-        'pertanahan',
-        'lainnya'
-      ),
+      defaultValue: false,
     },
     created_by: {
       type: DataTypes.STRING,
@@ -51,4 +54,11 @@ const Service = db.define(
   }
 );
 
-export default Service;
+SubmissionService.belongsTo(Service, {
+  foreignKey: 'service_id',
+  as: 'service',
+  onDelete: 'restrict',
+  onUpdate: 'restrict',
+});
+
+export default SubmissionService;

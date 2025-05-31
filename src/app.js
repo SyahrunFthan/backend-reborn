@@ -3,12 +3,14 @@ import fileUpload from 'express-fileupload';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
-// import swaggerUi from 'swagger-ui-express';
+import swaggerUi from 'swagger-ui-express';
+import swaggerJSDoc from 'swagger-jsdoc';
 import rateLimit from 'express-rate-limit';
 
 // Configuration
 import db from './configs/Database.js';
-import createModel from './models/ModelServices.js';
+
+// import createModel from './models/ModelSubmissionService.js';
 
 // Router API
 import RouteStallCategories from './routers/RouteStallCategories.js';
@@ -23,17 +25,15 @@ import RouteVillageApparatus from './routers/RouteVillageApparatus.js';
 import RouteService from './routers/RouteService.js';
 import RouteCitizenAssociation from './routers/RouteCitizenAssociation.js';
 import RouteRegion from './routers/RouteRegion.js';
-
-// import { readFile } from 'fs/promises';
-
-// const apiDocs = JSON.parse(
-//   await readFile(new URL('../api-docs.json', import.meta.url))
-// );
+import RouteSubmissionService from './routers/RouteSubmissionService.js';
+import optionsSwagger from './utils/swagger.js';
+import verifyToken from './middlewares/VerivyToken.js';
+import verifyRole from './middlewares/VerifyRole.js';
 
 dotenv.config();
 
 const app = express();
-
+const specs = swaggerJSDoc(optionsSwagger);
 try {
   await db.authenticate();
   console.log('Database connected');
@@ -60,7 +60,7 @@ app.use(limiter);
 app.use(cookieParser());
 app.use(fileUpload());
 app.use('/public', express.static('public'));
-// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDocs));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // End Point API
 app.use('/stall', RouteStall);
@@ -73,8 +73,11 @@ app.use('/residents', RouteResidents);
 app.use('/news', RouteNews);
 app.use('/village-apparatus', RouteVillageApparatus);
 app.use('/service', RouteService);
+app.use('/submission-service', RouteSubmissionService);
 app.use('/citizen-association', RouteCitizenAssociation);
 app.use('/region', RouteRegion);
+
+app.use('/', verifyToken, verifyRole(['superadmin', 'admin', 'user']));
 
 app.listen(5001, () => {
   console.log('Server running at port 5001....');
