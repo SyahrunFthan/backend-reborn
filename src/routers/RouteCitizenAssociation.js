@@ -29,7 +29,7 @@ router.get(
 router.post(
   '/create',
   verifyToken,
-  verifyRole(['admin']),
+  verifyRole(['admin', 'user']),
   validateData(schemaCitizenAssociation),
   createCitizensAssociation
 );
