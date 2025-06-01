@@ -5,9 +5,11 @@ import Roles from '../models/ModelRoles.js';
 import formatPhoneNumber from '../utils/formatPhone.js';
 import Residents from '../models/ModelResidents.js';
 import encrypt from '../utils/encryption.js';
+import decrypt from '../utils/decryption.js';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 import generateOTP from '../utils/generateOtp.js';
+import { Op } from 'sequelize';
 dotenv.config();
 
 // Mobile
@@ -129,6 +131,155 @@ export const register = async (req, res) => {
       fullname,
       email,
       username,
+      resident_id,
+      is_active: true,
+      phone: phoneNumber,
+      password: hashedPassword,
+      role_id: 3,
+    });
+
+    return res.status(201).json({ message: 'Anda berhasil mendaftar!' });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+
+// Login User For Web
+export const loginWeb = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const encryptUsername = encrypt(username);
+    const user = await Users.findOne({
+      where: {
+        username: encryptUsername,
+      },
+      include: {
+        model: Roles,
+        as: 'roles',
+        foreignKey: 'role_id',
+      },
+    });
+
+    if (!user)
+      return res.status(400).json({ email: 'Akun anda tidak ditemukan!' });
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch)
+      return res.status(400).json({ password: 'Password anda salah!' });
+
+    const token = jwt.sign(
+      { userId: user.uuid },
+      process.env.ACCESS_SECRET_TOKEN,
+      { expiresIn: '24h' }
+    );
+
+    await Users.update({ token }, { where: { uuid: user.uuid } });
+    const dataForClient = {
+      userId: user.uuid,
+      email: user.email,
+      username: user.username,
+      fullname: user.fullname,
+      role: user.roles.role_key,
+    };
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+      secure: false, // if https then true
+    });
+
+    return res.status(200).json({ dataForClient, token });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+  // try {
+  //   const encryptUsername = encrypt(username);
+  //   const user = await Users.findOne({
+  //     where: {
+  //       username: encryptUsername,
+  //     },
+  //   });
+
+  //   if (!user)
+  //     return res.status(400).json({ email: 'Akun anda tidak ditemukan!' });
+
+  //   const isMatch = await bcrypt.compare(password, user.password);
+  //   if (!isMatch)
+  //     return res.status(400).json({ password: 'Password anda salah!' });
+
+  //   const token = jwt.sign(
+  //     { userId: user.uuid },
+  //     process.env.ACCESS_SECRET_TOKEN,
+  //     { expiresIn: '24h' }
+  //   );
+
+  //   await Users.update({ token }, { where: { uuid: user.uuid } });
+
+  //   const dataForClient = {
+  //     userId: user.uuid,
+  //     email:user.email,
+  //     username: user.username,
+  //     fullname: user.fullname,
+  //     role: user.roles.role_key,
+  //   };
+
+  //   res.cookie('token', token, {
+  //     httpOnly: true,
+  //     maxAge: 24 * 60 * 60 * 1000,
+  //     secure: false, // if https then true
+  //   });
+
+  //   return res.status(200).json({ dataForClient, token });
+  // } catch (error) {
+  //   return res.status(500).json(error);
+  // }
+};
+
+// Register User For Web
+export const registerWeb = async (req, res) => {
+  const { fullname, email, phone, username, password, resident_id } = req.body;
+
+  try {
+    const encryptResident = encrypt(username);
+    const resident = await Residents.findOne({
+      where: {
+        nik: encryptResident,
+      },
+    });
+
+    if (!resident)
+      return res
+        .status(404)
+        .json({ message: 'Username Tidak Terdaftar di tabel penduduk!' });
+
+    const user = await Users.findOne({
+      where: {
+        username: encryptResident,
+      },
+    });
+
+    if (user)
+      return res.status(400).json({ message: 'Username Sudah Terdaftar!' });
+
+    const checkEmail = await Users.findOne({ where: { email } });
+    if (checkEmail)
+      return res.status(400).json({ email: 'Email sudah di gunakan!' });
+
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const phoneNumber = formatPhoneNumber(phone);
+
+    const checkPhone = await Users.findOne({ where: { phone: phoneNumber } });
+    if (checkPhone)
+      return res.status(400).json({ phone: 'Nomor telepon sudah di gunakan!' });
+
+    const encryptNik = encrypt(username);
+
+    await Users.create({
+      fullname,
+      email,
+      username: encryptNik,
       resident_id,
       is_active: true,
       phone: phoneNumber,

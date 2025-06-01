@@ -8,7 +8,7 @@ import rateLimit from 'express-rate-limit';
 
 // Configuration
 import db from './configs/Database.js';
-import createModel from './models/ModelServices.js';
+import createModel from './models/ModelProfileVillage.js';
 
 // Router API
 import RouteStallCategories from './routers/RouteStallCategories.js';
