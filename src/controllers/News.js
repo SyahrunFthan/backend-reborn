@@ -29,7 +29,7 @@ export const createNews = async (req, res) => {
     }
 
     const filename = Date.now() + ext;
-    file.mv(`public/News/${filename}`);
+    file.mv(`public/news/${filename}`);
 
     if (!selectedImage) {
       selectedImage = filename;
@@ -37,7 +37,7 @@ export const createNews = async (req, res) => {
 
     await NewsFile.create({
       img: filename,
-      path_img: `${req.protocol}://${req.get('host')}/public/News/${filename}`,
+      path_img: `${req.protocol}://${req.get('host')}/public/news/${filename}`,
     });
   }
 
