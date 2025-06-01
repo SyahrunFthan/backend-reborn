@@ -1,21 +1,71 @@
 import News from '../models/ModelNews.js';
 import path from 'path';
 import fs from 'fs';
-
 import NewsFile from '../models/ModelNewsFile.js';
 
+// Admin & User
+export const getNews = async (req, res) => {
+  try {
+    const response = await NewsFile.findAll({
+      attributes: ['uuid', 'img', 'path_img'],
+      include: [
+        {
+          model: News,
+          as: 'News',
+          attributes: ['uuid', 'title', 'description'],
+        },
+      ],
+    });
+    return res.status(200).json({ response });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+// Admin & User
+export const getNewsById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const response = await NewsFile.findAll({
+      where: {
+        news_id: id,
+      },
+      attributes: ['img', 'path_img'],
+      include: [
+        {
+          model: News,
+          as: 'News',
+          attributes: ['uuid', 'title', 'description'],
+        },
+      ],
+    });
+
+    if (!response) {
+      return res
+        .status(404)
+        .json({ message: 'tidak ada berita yang di temukan' });
+    }
+
+    return res.status(200).json({ response });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+// Admin
 export const createNews = async (req, res) => {
   const { title, description } = req.body;
-  const { id } = req.params;
+  const { userId } = req;
 
   if (!req.files || req.files.file.length === 0) {
     return res.status(422).json({ message: 'Img harus di isi!' });
   }
 
-  const files = req.files.file;
+  const files = Array.isArray(req.files.file)
+    ? req.files.file
+    : [req.files.file];
   const allowedTypes = ['.png', '.jpg', '.jpeg'];
   const fileSizeLimit = 300000;
-  let selectedImage = null;
+  let selectedImages = [];
 
   for (const file of files) {
     const fileSize = file.data.length;
@@ -31,9 +81,7 @@ export const createNews = async (req, res) => {
     const filename = Date.now() + ext;
     file.mv(`public/news/${filename}`);
 
-    if (!selectedImage) {
-      selectedImage = filename;
-    }
+    selectedImages.push(filename);
 
     await NewsFile.create({
       img: filename,
@@ -45,12 +93,12 @@ export const createNews = async (req, res) => {
     const newsEntry = await News.create({
       title: title,
       description: description,
-      created_by: id,
+      created_by: userId,
     });
 
     await NewsFile.update(
       { news_id: newsEntry.uuid },
-      { where: { news_id: null } }
+      { where: { img: selectedImages } }
     );
 
     return res.status(201).json({ message: 'Berhasil membuat news' });
@@ -58,76 +106,64 @@ export const createNews = async (req, res) => {
     return res.status(500).json(error);
   }
 };
-// user
+// Admin
 export const updateNews = async (req, res) => {
   const { id } = req.params;
   const { title, description } = req.body;
 
-  const news = await News.findByPk(id);
+  try {
+    const newsEntry = await News.findByPk(id);
+    if (!newsEntry) {
+      return res.status(404).json({ message: 'Berita tidak ditemukan' });
+    }
 
-  if (!req.files) {
-    try {
-      await Stalls.update(
-        {
-          title: title,
-          description: description,
-        },
-        {
-          where: {
-            uuid: id,
-          },
+    await News.update({ title, description }, { where: { uuid: id } });
+
+    if (req.files && req.files.file) {
+      const files = Array.isArray(req.files.file)
+        ? req.files.file
+        : [req.files.file];
+      const allowedTypes = ['.png', '.jpg', '.jpeg'];
+      const fileSizeLimit = 300000;
+      let selectedImages = [];
+
+      for (const file of files) {
+        const fileSize = file.data.length;
+        const ext = path.extname(file.name);
+
+        if (!allowedTypes.includes(ext.toLowerCase())) {
+          return res
+            .status(422)
+            .json({ message: 'Format img tidak di dukung!' });
         }
-      );
+        if (fileSize > fileSizeLimit) {
+          return res.status(422).json({ message: 'Ukuran img terlalu besar!' });
+        }
 
-      return res.status(200).json({ message: 'Berhasil mengubah News!' });
-    } catch (error) {
-      return res.status(500).json(error);
-    }
-  } else {
-    const file = req.files.file;
-    const fileSize = file.data.length;
-    const ext = path.extname(file.name);
-    const allowedTypes = ['.png', '.jpg', '.jpeg'];
-    const filename = Date.now() + ext;
+        const filename = Date.now() + ext;
+        await file.mv(`public/News/${filename}`);
 
-    if (!allowedTypes.includes(ext.toLowerCase()))
-      return res.status(422).json({ message: 'Format img tidak di dukung!' });
-    if (fileSize > 300000)
-      return res.status(422).json({ message: 'Ukuran img terlalu besar!' });
+        selectedImages.push(filename);
 
-    const pathImg = `${req.protocol}://${req.get(
-      'host'
-    )}/public/news/${filename}`;
-
-    file.mv(`public/news/${filename}`);
-
-    if (news.img !== null) {
-      fs.unlinkSync(`public/news/${news.img}`);
-    }
-
-    try {
-      await News.update(
-        {
-          title: title,
-          description: description,
+        await NewsFile.create({
           img: filename,
-          path_img: pathImg,
-        },
-        {
-          where: {
-            uuid: id,
-          },
-        }
-      );
-
-      return res.status(200).json({ message: 'Berhasil mengubah kategori!' });
-    } catch (error) {
-      return res.status(500).json(error);
+          path_img: `${req.protocol}://${req.get(
+            'host'
+          )}/public/News/${filename}`,
+          news_id: id,
+        });
+      }
     }
+
+    return res.status(200).json({ message: 'Berita berhasil diperbarui' });
+  } catch (error) {
+    console.error('Error updating news:', error);
+    return res
+      .status(500)
+      .json({ message: 'Terjadi kesalahan', error: error.message });
   }
 };
-
-// user
+// Admin
 export const deleteNews = async (req, res) => {
   const { id } = req.params;
 

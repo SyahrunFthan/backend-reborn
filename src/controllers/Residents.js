@@ -1,15 +1,87 @@
+import CitizensAssocation from '../models/ModelCitizensAssocation.js';
+import Region from '../models/ModelRegion.js';
 import Residents from '../models/ModelResidents.js';
 import encrypt from '../utils/encryption.js';
+import descrypt from '../utils/decryption.js';
 
+// Admin & User
 export const getResidents = async (req, res) => {
   try {
-    const residents = await Residents.findAll();
-    return res.status(200).json({ residents });
+    const response = await Residents.findAll({
+      attributes: [
+        'uuid',
+        'name',
+        'nik',
+        'no_kk',
+        'place_birth',
+        'date_birth',
+        'gender',
+        'status_married',
+        'religion',
+        'education',
+        'work',
+        'age',
+        'citizen_status',
+      ],
+      include: [
+        {
+          model: CitizensAssocation,
+          as: 'rt_rw',
+          attributes: ['rt_number', 'rw_number'],
+        },
+        {
+          model: Region,
+          as: 'region',
+          attributes: ['name'],
+        },
+      ],
+    });
+
+    return res.status(200).json({ response });
   } catch (error) {
     return res.status(500).json(error);
   }
 };
+// Admin & User
+export const getResidentsById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const response = await Residents.findByPk(id, {
+      attributes: [
+        'uuid',
+        'name',
+        'nik',
+        'no_kk',
+        'place_birth',
+        'date_birth',
+        'gender',
+        'status_married',
+        'religion',
+        'education',
+        'work',
+        'age',
+        'citizen_status',
+      ],
+      include: [
+        {
+          model: CitizensAssocation,
+          as: 'rt_rw',
+          attributes: ['rt_number', 'rw_number'],
+        },
+        {
+          model: Region,
+          as: 'region',
+          attributes: ['name'],
+        },
+      ],
+    });
 
+    return res.status(200).json({ response });
+  } catch (error) {
+    return res.status(500).json(500);
+  }
+};
+// Admin
 export const createResidents = async (req, res) => {
   const {
     nik,
@@ -69,7 +141,7 @@ export const createResidents = async (req, res) => {
     return res.status(500).json(error);
   }
 };
-
+// Admin
 export const updateResidents = async (req, res) => {
   try {
     const { id } = req.params;
@@ -120,7 +192,7 @@ export const updateResidents = async (req, res) => {
     return res.status(500).json({ message: 'Terjadi kesalahan', error });
   }
 };
-
+// Admin
 export const deleteResidents = async (req, res) => {
   const { id } = req.params;
 
