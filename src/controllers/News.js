@@ -2,8 +2,6 @@ import News from '../models/ModelNews.js';
 import path from 'path';
 import fs from 'fs';
 import NewsFile from '../models/ModelNewsFile.js';
-import Users from '../models/ModelUsers.js';
-import { where } from 'sequelize';
 
 // Admin & User
 export const getNews = async (req, res) => {
@@ -81,13 +79,13 @@ export const createNews = async (req, res) => {
     }
 
     const filename = Date.now() + ext;
-    await file.mv(`public/News/${filename}`);
+    file.mv(`public/news/${filename}`);
 
     selectedImages.push(filename);
 
     await NewsFile.create({
       img: filename,
-      path_img: `${req.protocol}://${req.get('host')}/public/News/${filename}`,
+      path_img: `${req.protocol}://${req.get('host')}/public/news/${filename}`,
     });
   }
 
