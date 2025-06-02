@@ -3,17 +3,19 @@ import validateData from '../middlewares/Validation.js';
 import {
   checkNikForRegister,
   login,
-  loginWebsite,
+  loginWeb,
   logout,
   register,
+  registerWeb,
   removeToken,
   sendOtpToEmail,
 } from '../controllers/Auth.js';
 import {
   checkNikSchema,
   loginSchema,
-  schemaAdmin,
+  loginWebSchema,
   registerSchema,
+  registerWebSchema,
 } from '../validations/SchemaAuth.js';
 import verifyToken from '../middlewares/VerivyToken.js';
 
@@ -104,7 +106,7 @@ router.post('/login', validateData(loginSchema), login);
  *          500:
  *            description: Terjadi kesalahan server
  */
-router.post('/login-admin', validateData(schemaAdmin), loginWebsite);
+router.post('/login-web', validateData(loginWebSchema), loginWeb);
 
 /**
  * @swagger
@@ -182,6 +184,8 @@ router.post('/register', validateData(registerSchema), register);
  *       500:
  *         description: Internal server error
  */
+router.post('/register', validateData(registerSchema), register);
+router.post('/register-web', validateData(registerWebSchema), registerWeb);
 router.post('/check-nik', validateData(checkNikSchema), checkNikForRegister);
 router.delete('/logout', verifyToken, logout);
 router.delete('/remove-token/:id', removeToken, logout);

@@ -7,13 +7,19 @@ export const getCitizensAssocation = async (req, res) => {
     const response = await CitizensAssocation.findAll({
       attributes: [
         'uuid',
-        'region_id',
         'rt_number',
         'rw_number',
         'rt_leader',
         'rw_leader',
         'total_kk',
         'total_population',
+      ],
+      include: [
+        {
+          model: Region,
+          as: 'region',
+          attributes: ['uuid', 'name'],
+        },
       ],
     });
 
