@@ -7,13 +7,10 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import rateLimit from 'express-rate-limit';
 
-// Configuration
-import db from './configs/Database.js';
-
-
 // import createModel from './models/ModelSubmissionService.js';
 
-// Router API
+// Functions
+import db from './configs/Database.js';
 import RouteStallCategories from './routers/RouteStallCategories.js';
 import RouteAuth from './routers/RouteAuth.js';
 import RouteInComingMails from './routers/RouteInComingMails.js';
@@ -54,7 +51,7 @@ app.use(express.json());
 app.use(
   cors({
     credentials: true,
-    origin: 'http://localhost:5173/',
+    origin: ['http://localhost:5173/'],
   })
 );
 app.use(limiter);
