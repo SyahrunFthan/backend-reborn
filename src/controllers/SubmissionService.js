@@ -1,5 +1,6 @@
 import SubmissionService from '../models/ModelSubmissionService.js';
 import path from 'path';
+import fs from 'fs';
 import encrypt from '../utils/encryption.js';
 import { Op } from 'sequelize';
 import Service from '../models/ModelServices.js';
@@ -86,6 +87,25 @@ export const createSubmissionService = async (req, res) => {
     return res
       .status(201)
       .json({ message: 'Pengajuan anda berhasil dikirim.' });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+
+export const deleteSubmissionService = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const checkSubmission = await SubmissionService.findOne({
+      where: { uuid: id },
+    });
+    if (checkSubmission.file_name !== null) {
+      fs.unlinkSync(`public/applicants/${checkSubmission.file_name}`);
+    }
+
+    checkSubmission.destroy();
+
+    return res.status(200).json({ message: 'Pengajuan berhasil dihapus!' });
   } catch (error) {
     return res.status(500).json(error);
   }

@@ -8,6 +8,7 @@
 /public/stall/*
 /public/news/*
 /public/applicants/*
+/public/polygon/*
 
 /logs
 *.log

@@ -5,6 +5,7 @@ import validateData from '../middlewares/Validation.js';
 import { createSchema } from '../validations/SchemaSubmissionService.js';
 import {
   createSubmissionService,
+  deleteSubmissionService,
   getSubmissionServiceUser,
 } from '../controllers/SubmissionService.js';
 
@@ -22,6 +23,12 @@ router.post(
   verifyRole(['user']),
   validateData(createSchema),
   createSubmissionService
+);
+router.delete(
+  '/delete/:id',
+  verifyToken,
+  verifyRole(['user']),
+  deleteSubmissionService
 );
 
 export default router;
