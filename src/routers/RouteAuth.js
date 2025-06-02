@@ -103,7 +103,7 @@ router.post('/login', validateData(loginSchema), login);
  *          500:
  *            description: Terjadi kesalahan server
  */
-router.post('/login-admin', validateData(loginAdmin), login);
+router.post('/login-admin', validateData(loginAdmin), loginAdmin);
 
 /**
  * @swagger
