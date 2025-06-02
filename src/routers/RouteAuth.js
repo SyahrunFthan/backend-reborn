@@ -10,6 +10,7 @@ import {
 } from '../controllers/Auth.js';
 import {
   checkNikSchema,
+  loginAdmin,
   loginSchema,
   registerSchema,
 } from '../validations/SchemaAuth.js';
@@ -73,6 +74,36 @@ router.post('/send-otp', validateData(registerSchema), sendOtpToEmail);
  *            description: Terjadi kesalahan server
  */
 router.post('/login', validateData(loginSchema), login);
+
+/**
+ * @swagger
+ * /auth/login-admin:
+ *    post:
+ *      summary: Login Website
+ *      tags:
+ *        - Auth
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                username:
+ *                  type: string
+ *                  example: 72631883781231
+ *                password:
+ *                  type: string
+ *                  example: 12345
+ *      responses:
+ *          200:
+ *            description: Berhasil Login
+ *          400:
+ *            description: Bad Request
+ *          500:
+ *            description: Terjadi kesalahan server
+ */
+router.post('/login-admin', validateData(loginAdmin), login);
 
 /**
  * @swagger
