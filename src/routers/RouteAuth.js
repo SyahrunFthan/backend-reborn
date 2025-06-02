@@ -138,6 +138,12 @@ router.post('/login-admin', validateData(schemaAdmin), loginWebsite);
  *                confirmPassword:
  *                  type: string
  *                  example: 12345
+ *                resident_id:
+ *                  type: string
+ *                  example: Resident ID
+ *                role_id:
+ *                  type: integer
+ *                  example: 2
  *      responses:
  *          201:
  *            description: Berhasil Membuat Akun
