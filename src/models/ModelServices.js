@@ -1,6 +1,5 @@
 import { DataTypes } from 'sequelize';
 import db from '../configs/Database.js';
-import Users from './ModelUsers.js';
 
 const Service = db.define(
   'services',
@@ -31,7 +30,13 @@ const Service = db.define(
       defaultValue: true,
     },
     type_service: {
-      type: DataTypes.ENUM('umum', 'penduduk', 'pertanahan', 'lainnya'),
+      type: DataTypes.ENUM(
+        'umum',
+        'penduduk',
+        'pernikahan',
+        'pertanahan',
+        'lainnya'
+      ),
     },
     created_by: {
       type: DataTypes.STRING,
@@ -45,18 +50,5 @@ const Service = db.define(
     freezeTableName: true,
   }
 );
-
-Service.belongsTo(Users, {
-  foreignKey: 'created_by',
-  as: 'created',
-  onDelete: 'restrict',
-  onUpdate: 'restrict',
-});
-Service.belongsTo(Users, {
-  foreignKey: 'updated_by',
-  as: 'updated',
-  onDelete: 'restrict',
-  onUpdate: 'restrict',
-});
 
 export default Service;

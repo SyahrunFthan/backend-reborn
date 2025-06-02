@@ -4,11 +4,11 @@
 /public/surat-keluar/*
 /public/surat-masuk/*
 /public/village-stall/*
-
-!public/icons
-!public/surat-keluar
-!public/surat-masuk
-!public/village-stall
+/public/service/*
+/public/stall/*
+/public/news/*
+/public/applicants/*
+/public/polygon/*
 
 /logs
 *.log

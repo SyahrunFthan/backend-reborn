@@ -6,6 +6,7 @@ import {
   updateService,
   deleteService,
   getServiceById,
+  getServiceByType,
 } from '../controllers/Service.js';
 import { schemaService } from '../validations/SchemaService.js';
 import verifyToken from '../middlewares/VerivyToken.js';
@@ -14,6 +15,12 @@ import verifyRole from '../middlewares/VerifyRole.js';
 const router = express.Router();
 
 router.get('/', getService);
+router.get(
+  '/type',
+  verifyToken,
+  verifyRole(['admin', 'user']),
+  getServiceByType
+);
 router.get('/:id', getServiceById);
 router.post(
   '/create',

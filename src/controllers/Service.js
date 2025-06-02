@@ -34,7 +34,22 @@ export const getService = async (req, res) => {
   }
 };
 
-// Admin & User
+
+export const getServiceByType = async (req, res) => {
+  try {
+    const type_service = req.query.type_service || '';
+    const response = await Service.findAll({
+      attributes: ['uuid', 'title', 'path_file'],
+      where: { type_service },
+    });
+
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+
+// user
 export const getServiceById = async (req, res) => {
   const { id } = req.params;
   try {
@@ -69,6 +84,13 @@ export const createService = async (req, res) => {
 
   if (!req.files) return res.status(422).json({ file: 'File wajib diunggah.' });
 
+  const checkService = await Service.findAll({
+    where: { title, type_service },
+  });
+
+  if (checkService.length > 0)
+    return res.status(409).json({ title: 'Layanan sudah ditambahkan.' });
+
   const file = req.files.file;
   const fileSize = file.data.length;
   const ext = path.extname(file.name);
@@ -76,19 +98,21 @@ export const createService = async (req, res) => {
   const filename = Date.now() + ext;
 
   if (!allowedTypes.includes(ext.toLowerCase()))
-    return res.status(422).json({ message: 'Format file tidak di dukung!' });
+    return res.status(422).json({ file: 'Format file tidak di dukung!' });
 
   if (fileSize > 3000000)
-    return res.status(422).json({ message: 'Ukuran file max 3mb' });
+    return res.status(422).json({ file: 'Ukuran file max 3mb' });
 
   const pathFile = `${req.protocol}://${req.get(
     'host'
   )}/public/service/${filename}`;
 
+  file.mv(`public/service/${filename}`);
+
   try {
     await Service.create({
-      type_service,
       title,
+      type_service,
       file: filename,
       path_file: pathFile,
       created_by: userId,

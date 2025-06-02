@@ -5,7 +5,7 @@ const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])[A-Za-z\d\S]{8,}$/;
 
 const loginSchema = z.object({
-  email: z.string().min(1, 'email tidak boleh kosong!'),
+  email: z.string().min(1, 'Email tidak boleh kosong!'),
   password: z.string().nonempty({ message: 'Password tidak boleh kosong!' }),
 });
 
@@ -71,7 +71,10 @@ const registerWebSchema = z
   });
 
 const checkNikSchema = z.object({
-  nik: z.string().min(1, 'NIK tidak boleh kosong!'),
+  nik: z
+    .string()
+    .min(16, 'NIK harus min 16 angka!')
+    .nonempty({ message: 'NIK tidak boleh kosong' }),
 });
 
 export {
