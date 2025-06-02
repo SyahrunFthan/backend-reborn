@@ -6,7 +6,6 @@ import {
   loginWeb,
   logout,
   register,
-  registerWeb,
   removeToken,
   sendOtpToEmail,
 } from '../controllers/Auth.js';
@@ -15,7 +14,6 @@ import {
   loginSchema,
   loginWebSchema,
   registerSchema,
-  registerWebSchema,
 } from '../validations/SchemaAuth.js';
 import verifyToken from '../middlewares/VerivyToken.js';
 
@@ -112,11 +110,10 @@ router.post('/login-web', validateData(loginWebSchema), loginWeb);
  * @swagger
  * /auth/register:
  *    post:
- *      summary: Login Mobile
+ *      summary: Register Mobile & Web
  *      tags:
  *        - Auth
  *      requestBody:
- *        required: true
  *        content:
  *          application/json:
  *            schema:
@@ -140,6 +137,12 @@ router.post('/login-web', validateData(loginWebSchema), loginWeb);
  *                confirmPassword:
  *                  type: string
  *                  example: 12345
+ *                resident_id:
+ *                  type: string
+ *                  example: Resident ID
+ *                role_id:
+ *                  type: integer
+ *                  example: 2
  *      responses:
  *          201:
  *            description: Berhasil Membuat Akun
@@ -154,7 +157,7 @@ router.post('/register', validateData(registerSchema), register);
  * @swagger
  * /auth/check-nik:
  *   post:
- *     summary: Kirim OTP ke email
+ *     summary: Check NIK
  *     tags:
  *       - Auth
  *     requestBody:
@@ -179,8 +182,6 @@ router.post('/register', validateData(registerSchema), register);
  *       500:
  *         description: Internal server error
  */
-router.post('/register', validateData(registerSchema), register);
-router.post('/register-web', validateData(registerWebSchema), registerWeb);
 router.post('/check-nik', validateData(checkNikSchema), checkNikForRegister);
 router.delete('/logout', verifyToken, logout);
 router.delete('/remove-token/:id', removeToken, logout);
