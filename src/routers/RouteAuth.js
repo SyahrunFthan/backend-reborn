@@ -114,7 +114,6 @@ router.post('/login-admin', validateData(schemaAdmin), loginWebsite);
  *      tags:
  *        - Auth
  *      requestBody:
- *        required: true
  *        content:
  *          application/json:
  *            schema:
@@ -158,7 +157,7 @@ router.post('/register', validateData(registerSchema), register);
  * @swagger
  * /auth/check-nik:
  *   post:
- *     summary: Kirim OTP ke email
+ *     summary: Check NIK
  *     tags:
  *       - Auth
  *     requestBody:
