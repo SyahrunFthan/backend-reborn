@@ -3,6 +3,7 @@ import validateData from '../middlewares/Validation.js';
 import {
   checkNikForRegister,
   login,
+  loginWebsite,
   logout,
   register,
   removeToken,
@@ -10,8 +11,8 @@ import {
 } from '../controllers/Auth.js';
 import {
   checkNikSchema,
-  loginAdmin,
   loginSchema,
+  schemaAdmin,
   registerSchema,
 } from '../validations/SchemaAuth.js';
 import verifyToken from '../middlewares/VerivyToken.js';
@@ -103,7 +104,7 @@ router.post('/login', validateData(loginSchema), login);
  *          500:
  *            description: Terjadi kesalahan server
  */
-router.post('/login-admin', validateData(loginAdmin), loginAdmin);
+router.post('/login-admin', validateData(schemaAdmin), loginWebsite);
 
 /**
  * @swagger

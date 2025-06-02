@@ -9,7 +9,7 @@ const loginSchema = z.object({
   password: z.string().nonempty({ message: 'Password tidak boleh kosong!' }),
 });
 
-const loginAdmin = z.object({
+const schemaAdmin = z.object({
   username: z.string().nonempty(1, 'Username tidak boleh kosong!'),
   password: z.string().nonempty({ message: 'Password tidak boleh kosong!' }),
 });
@@ -49,4 +49,4 @@ const checkNikSchema = z.object({
     .nonempty({ message: 'NIK tidak boleh kosong' }),
 });
 
-export { loginSchema, registerSchema, checkNikSchema, loginAdmin };
+export { loginSchema, registerSchema, checkNikSchema, schemaAdmin };
