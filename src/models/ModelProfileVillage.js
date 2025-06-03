@@ -2,7 +2,7 @@ import { DataTypes } from 'sequelize';
 import db from '../configs/Database.js';
 
 const ProfileVillage = db.define(
-  'Profile_village',
+  'profile_village',
   {
     uuid: {
       type: DataTypes.STRING,
@@ -59,23 +59,15 @@ const ProfileVillage = db.define(
     },
     polygon: {
       type: DataTypes.TEXT,
-      allowNull: false,
     },
     central_lat: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     central_long: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     color_polygon: {
       type: DataTypes.STRING,
-      allowNull: false,
-    },
-    path_json: {
-      type: DataTypes.STRING,
-      allowNull: true,
     },
   },
   {

@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import db from '../configs/Database.js';
+import ProfileVillage from './ModelProfileVillage.js';
 
 const Aparatus = db.define(
   'village_aparatus',
@@ -14,7 +15,7 @@ const Aparatus = db.define(
       },
     },
     nik: {
-      type: DataTypes.CHAR(20),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     name: {
