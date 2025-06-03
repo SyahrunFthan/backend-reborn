@@ -1,0 +1,288 @@
+{
+  "swagger": "2.0",
+  "info": { "contact": {}, "title": "API APP DESA", "version": "1.0.0" },
+  "host": "localhost:5001",
+  "basePath": "/",
+  "schemes": ["http"],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "email": {
+                  "example": "syahrulmei002@gmail.com",
+                  "type": "string"
+                },
+                "password": { "example": "", "type": "string" }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Auth"],
+        "description": "Login",
+        "operationId": "login",
+        "summary": "Login"
+      }
+    },
+    "/auth/logout": {
+      "delete": {
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Auth"],
+        "description": "Logout",
+        "operationId": "logout",
+        "summary": "Logout"
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "confirmPassword": {
+                  "example": "@Syahrun19",
+                  "type": "string"
+                },
+                "email": {
+                  "example": "syahrulmei002@gmail.com",
+                  "type": "string"
+                },
+                "fullname": {
+                  "example": "Syahrun Fathan Hidayah",
+                  "type": "string"
+                },
+                "password": { "example": "@Syahrun19", "type": "string" },
+                "phone": { "example": "081244423801", "type": "string" },
+                "username": { "example": "syahrun_fathan", "type": "string" }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Auth"],
+        "description": "Register User",
+        "operationId": "registerUser",
+        "summary": "Register User"
+      }
+    },
+    "/incoming-mails": {
+      "get": {
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Incoming Mails"],
+        "description": "Get Data",
+        "operationId": "getData",
+        "summary": "Get Data"
+      },
+      "post": {
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          { "in": "formData", "name": "date_latter", "type": "string" },
+          { "in": "formData", "name": "date_received", "type": "string" },
+          {
+            "format": "binary",
+            "in": "formData",
+            "name": "file",
+            "type": "string"
+          },
+          { "in": "formData", "name": "reference_number", "type": "string" },
+          { "in": "formData", "name": "regarding", "type": "string" },
+          { "in": "formData", "name": "sender", "type": "string" },
+          { "in": "formData", "name": "summary", "type": "string" }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Incoming Mails"],
+        "description": "Create Surat Masuk",
+        "operationId": "createSuratMasuk",
+        "summary": "Create Surat Masuk"
+      }
+    },
+    "/incoming-mails/0f5b0c21-83ac-4476-970d-fd2ce5c3348d": {
+      "delete": {
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Incoming Mails"],
+        "description": "Delete Data",
+        "operationId": "deleteData",
+        "summary": "Delete Data"
+      },
+      "get": {
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Incoming Mails"],
+        "description": "Get Data ID",
+        "operationId": "getDataId",
+        "summary": "Get Data ID"
+      },
+      "patch": {
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          { "in": "formData", "name": "date_latter", "type": "string" },
+          { "in": "formData", "name": "date_received", "type": "string" },
+          {
+            "format": "binary",
+            "in": "formData",
+            "name": "file",
+            "type": "string"
+          },
+          { "in": "formData", "name": "reference_number", "type": "string" },
+          { "in": "formData", "name": "regarding", "type": "string" },
+          { "in": "formData", "name": "sender", "type": "string" },
+          { "in": "formData", "name": "summary", "type": "string" }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Incoming Mails"],
+        "description": "Update Surat Masuk",
+        "operationId": "updateSuratMasuk",
+        "summary": "Update Surat Masuk"
+      }
+    },
+    "/stall-categories": {
+      "get": {
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Category Stall"],
+        "description": "Get Category Stall",
+        "operationId": "getCategoryStall",
+        "summary": "Get Category Stall"
+      }
+    },
+    "/stall-categories/create": {
+      "post": {
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "format": "binary",
+            "in": "formData",
+            "name": "file",
+            "type": "string"
+          },
+          { "in": "formData", "name": "title", "type": "string" }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Category Stall"],
+        "description": "Post Category Stall",
+        "operationId": "postCategoryStall",
+        "summary": "Post Category Stall"
+      }
+    },
+    "/stall-categories/delete/2040dff0-1dc3-4911-9a12-2ea1a79f63db": {
+      "delete": {
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "format": "binary",
+            "in": "formData",
+            "name": "file",
+            "type": "string"
+          },
+          { "in": "formData", "name": "title", "type": "string" }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Category Stall"],
+        "description": "Delete Category Stall",
+        "operationId": "deleteCategoryStall",
+        "summary": "Delete Category Stall"
+      }
+    },
+    "/stall-categories/update/0a781d5b-e2e7-4d41-b0b7-d22c349aec2e": {
+      "patch": {
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "format": "binary",
+            "in": "formData",
+            "name": "file",
+            "type": "string"
+          },
+          { "in": "formData", "name": "title", "type": "string" }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Category Stall"],
+        "description": "Patch Category Stall",
+        "operationId": "patchCategoryStall",
+        "summary": "Patch Category Stall"
+      }
+    },
+    "/residents/": {
+      "get": {
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Residents"],
+        "description": "Get Category Stall",
+        "operationId": "getCategoryStall",
+        "summary": "Get Category Stall"
+      }
+    },
+
+    "/residents/:id": {
+      "get": {
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Residents"],
+        "description": "Get Category Stall",
+        "operationId": "getCategoryStall",
+        "summary": "Get Category Stall"
+      }
+    },
+    "/residents/update/:id": {
+      "patch": {
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "format": "binary",
+            "in": "formData",
+            "name": "file",
+            "type": "string"
+          },
+          { "in": "formData", "name": "title", "type": "string" }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Residents"],
+        "description": "Patch Category Stall",
+        "operationId": "patchCategoryStall",
+        "summary": "Patch Category Stall"
+      }
+    },
+    "/residents/create": {
+      "post": {
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "format": "binary",
+            "in": "formData",
+            "name": "file",
+            "type": "string"
+          },
+          { "in": "formData", "name": "title", "type": "string" }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Residents"],
+        "description": "Post Category Stall",
+        "operationId": "postCategoryStall",
+        "summary": "Post Category Stall"
+      }
+    }
+  },
+  "tags": [
+    { "name": "Category Stall" },
+    { "name": "User" },
+    { "name": "Auth" },
+    { "name": "Stall" },
+    { "name": "Incoming Mails" },
+    { "name": "Region" },
+    { "name": "Residents" }
+  ]
+}

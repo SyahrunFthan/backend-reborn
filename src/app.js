@@ -6,8 +6,11 @@ import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import rateLimit from 'express-rate-limit';
+import verifyToken from './middlewares/VerivyToken.js';
+import verifyRole from './middlewares/VerifyRole.js';
+import optionsSwagger from './utils/swagger.js';
 
-// import createModel from './models/ModelSubmissionService.js';
+import createModel from './models/ModelProfileVillage.js';
 
 // Functions
 import db from './configs/Database.js';
@@ -24,9 +27,13 @@ import RouteService from './routers/RouteService.js';
 import RouteCitizenAssociation from './routers/RouteCitizenAssociation.js';
 import RouteRegion from './routers/RouteRegion.js';
 import RouteSubmissionService from './routers/RouteSubmissionService.js';
-import optionsSwagger from './utils/swagger.js';
-import verifyToken from './middlewares/VerivyToken.js';
-import verifyRole from './middlewares/VerifyRole.js';
+import RouteProfileVillage from './routers/RouteProfileVillage.js';
+
+// import { readFile } from 'fs/promises';
+
+// const apiDocs = JSON.parse(
+//   await readFile(new URL('../api-docs.json', import.meta.url))
+// );
 
 dotenv.config();
 
@@ -74,6 +81,7 @@ app.use('/service', RouteService);
 app.use('/submission-service', RouteSubmissionService);
 app.use('/citizen-association', RouteCitizenAssociation);
 app.use('/region', RouteRegion);
+app.use('/profile-village', RouteProfileVillage);
 
 app.use('/', verifyToken, verifyRole(['superadmin', 'admin', 'user']));
 

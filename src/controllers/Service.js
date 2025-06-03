@@ -34,7 +34,6 @@ export const getService = async (req, res) => {
   }
 };
 
-
 export const getServiceByType = async (req, res) => {
   try {
     const type_service = req.query.type_service || '';
