@@ -53,5 +53,9 @@ CitizensAssocation.belongsTo(Region, {
   as: 'region',
   onDelete: 'cascade',
 });
+Region.hasMany(CitizensAssocation, {
+  foreignKey: 'region_id',
+  as: 'citizens_assocation',
+});
 
 export default CitizensAssocation;
