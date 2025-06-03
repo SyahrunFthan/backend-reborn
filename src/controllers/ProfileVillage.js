@@ -1,5 +1,9 @@
+import Aparatus from '../models/ModelAparatus.js';
 import ProfileVillage from '../models/ModelProfileVillage.js';
 import path from 'path';
+import Region from '../models/ModelRegion.js';
+import CitizensAssocation from '../models/ModelCitizensAssocation.js';
+import Residents from '../models/ModelResidents.js';
 
 // ADMIN
 export const getProfileVillage = async (req, res) => {
@@ -8,15 +12,6 @@ export const getProfileVillage = async (req, res) => {
       attributes: [
         'uuid',
         'name_village',
-        'about',
-        'about',
-        'date',
-        'img',
-        'path_img',
-        'address',
-        'vision',
-        'mission',
-        'history',
         'latitude',
         'longitude',
         'polygon',
@@ -26,7 +21,48 @@ export const getProfileVillage = async (req, res) => {
       ],
     });
 
-    return res.status(200).json({});
+    const leaders = await Aparatus.findOne({
+      attributes: ['uuid', 'name', 'path_img'],
+      where: { position: 'Kepala Desa' },
+    });
+
+    const regions = await Region.findAll({
+      attributes: [
+        'uuid',
+        'leader_id',
+        'total_population',
+        'hectare_area',
+        'geo_polygon',
+        'map_color',
+      ],
+      include: [
+        {
+          model: Aparatus,
+          as: 'leader',
+          foreignKey: 'leader_id',
+          attributes: ['name', 'path_img', 'img'],
+        },
+      ],
+    });
+
+    const totalRt = await CitizensAssocation.count({
+      distinct: true,
+      col: 'rt_number',
+    });
+    const totalRw = await CitizensAssocation.count({
+      distinct: true,
+      col: 'rw_number',
+    });
+    const totalPopulationVillage = await Residents.count();
+
+    return res.status(200).json({
+      villages: response[0],
+      leaders,
+      regions,
+      totalRt,
+      totalRw,
+      totalPopulationVillage,
+    });
   } catch (error) {
     return res.status(200).json(error);
   }
@@ -68,6 +104,7 @@ export const createProfileVillage = async (req, res) => {
     'host'
   )}/public/profile-village/${filename}`;
 
+  file.mv(`public/profile-village/${filename}`);
   try {
     await ProfileVillage.create({
       name_village,

@@ -15,8 +15,8 @@ const router = express.Router();
 router.get('/', getProfileVillage);
 router.post(
   '/create',
-  // verifyToken,
-  // verifyRole(['admin']),
+  verifyToken,
+  verifyRole(['admin']),
   validateData(schemaProfileVillage),
   createProfileVillage
 );

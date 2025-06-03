@@ -56,7 +56,7 @@ const Region = db.define(
 Region.belongsTo(Aparatus, {
   foreignKey: 'leader_id',
   as: 'leader',
-  onDelete: 'cascade',
+  onDelete: 'restrict',
 });
 
 export default Region;

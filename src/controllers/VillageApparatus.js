@@ -68,10 +68,10 @@ export const createVillageApparatus = async (req, res) => {
     level,
   } = req.body;
 
-  const { name } = req;
-  if (!name) {
-    return res.status(404).json({ message: 'tidak ada ditemukan' });
-  }
+  // const { name } = req;
+  // if (!name) {
+  //   return res.status(404).json({ message: 'tidak ada ditemukan' });
+  // }
 
   if (!req.files || !req.files.file) {
     return res.status(422).json({ message: 'Gambar harus diisi!' });
@@ -90,11 +90,11 @@ export const createVillageApparatus = async (req, res) => {
     return res.status(422).json({ message: 'Ukuran gambar terlalu besar!' });
   }
 
-  await file.mv(`public/village-apparatus/${filename}`);
   const pathImg = `${req.protocol}://${req.get(
     'host'
   )}/public/village-apparatus/${filename}`;
 
+  file.mv(`public/village-apparatus/${filename}`);
   const encryptNik = encrypt(nik);
   try {
     await VillageApparatus.create({
@@ -109,7 +109,7 @@ export const createVillageApparatus = async (req, res) => {
       date_birth: new Date(date_birth),
       img: filename,
       path_img: pathImg,
-      created_by: name,
+      created_by: 'Admin',
     });
 
     return res.status(201).json({
