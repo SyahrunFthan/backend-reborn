@@ -31,6 +31,7 @@ export const getCitizensAssocation = async (req, res) => {
     return res.status(500).json(error);
   }
 };
+
 // Admin & User
 export const getCitizensAssocationById = async (req, res) => {
   const { id } = req.params;
@@ -57,6 +58,7 @@ export const getCitizensAssocationById = async (req, res) => {
     return res.status(500).json(error);
   }
 };
+
 // Admin
 export const createCitizensAssociation = async (req, res) => {
   const {
@@ -95,6 +97,7 @@ export const createCitizensAssociation = async (req, res) => {
     return res.status(500).json(error);
   }
 };
+
 // Admin
 export const updateCitizenAssociation = async (req, res) => {
   const {
@@ -136,6 +139,7 @@ export const updateCitizenAssociation = async (req, res) => {
     return res.status(500).json(error);
   }
 };
+
 // Admin
 export const deleteCitizenAssociation = async (req, res) => {
   try {
