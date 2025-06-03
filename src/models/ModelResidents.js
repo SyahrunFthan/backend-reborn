@@ -84,5 +84,9 @@ Residents.belongsTo(Region, {
   as: 'region',
   onDelete: 'restrict',
 });
+Region.hasMany(Residents, {
+  foreignKey: 'region_id',
+  as: 'residents',
+});
 
 export default Residents;

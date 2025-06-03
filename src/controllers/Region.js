@@ -1,4 +1,9 @@
+import { Sequelize } from 'sequelize';
+import CitizensAssocation from '../models/ModelCitizensAssocation.js';
 import Region from '../models/ModelRegion.js';
+import Residents from '../models/ModelResidents.js';
+import ProfileVillage from '../models/ModelProfileVillage.js';
+import Aparatus from '../models/ModelAparatus.js';
 
 // all role
 export const getRegion = async (req, res) => {
@@ -14,10 +19,62 @@ export const getRegion = async (req, res) => {
         'centroid_lat',
         'centroid_long',
         'map_color',
+        [
+          Sequelize.fn(
+            'COUNT',
+            Sequelize.fn(
+              'DISTINCT',
+              Sequelize.col('citizens_assocation.rt_number')
+            )
+          ),
+          'total_rt',
+        ],
+        [
+          Sequelize.fn(
+            'COUNT',
+            Sequelize.fn(
+              'DISTINCT',
+              Sequelize.col('citizens_assocation.rw_number')
+            )
+          ),
+          'total_rw',
+        ],
+        [
+          Sequelize.fn(
+            'COUNT',
+            Sequelize.fn('DISTINCT', Sequelize.col('residents.region_id'))
+          ),
+          'total_population_region',
+        ],
       ],
+      include: [
+        {
+          model: CitizensAssocation,
+          as: 'citizens_assocation',
+          foreignKey: 'region_id',
+          attributes: [],
+        },
+        {
+          model: Residents,
+          as: 'residents',
+          foreignKey: 'region_id',
+          attributes: [],
+        },
+        {
+          model: Aparatus,
+          as: 'leader',
+          foreignKey: 'leader_id',
+          attributes: ['uuid', 'name', 'position', 'path_img'],
+        },
+      ],
+      group: ['regions.uuid'],
     });
 
-    return res.status(200).json({ response });
+    const villages = await ProfileVillage.findAll({
+      attributes: ['central_lat', 'central_long'],
+    });
+
+    return res.status(200).json({ response, villages: villages[0] });
   } catch (error) {
     return res.status(500).json(error);
   }
