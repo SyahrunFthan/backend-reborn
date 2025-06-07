@@ -13,7 +13,7 @@ import { schemaRegion } from '../validations/SchemaRegion.js';
 
 const router = express.Router();
 
-router.get('/', getRegion);
+router.get('/', verifyToken, verifyRole(['admin', 'user']), getRegion);
 router.get('/:id', getRegionById);
 router.post(
   '/create',

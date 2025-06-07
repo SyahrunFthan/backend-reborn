@@ -3,6 +3,7 @@ import validateData from '../middlewares/Validation.js';
 import {
   createVillageApparatus,
   deleteVillageApparatus,
+  getVillageApparaturForRegionForm,
   getVillageApparatus,
   getVillageApparatusById,
   updateVillageApparatus,
@@ -13,8 +14,14 @@ import verifyRole from '../middlewares/VerifyRole.js';
 
 const router = express.Router();
 
-router.get('/', getVillageApparatus);
-router.get('/:id', getVillageApparatusById);
+router.get('/', verifyToken, verifyRole(['admin']), getVillageApparatus);
+router.get(
+  '/region-form',
+  verifyToken,
+  verifyRole(['admin']),
+  getVillageApparaturForRegionForm
+);
+router.get('/:id', verifyToken, verifyRole(['admin']), getVillageApparatusById);
 router.post(
   '/create',
   verifyToken,

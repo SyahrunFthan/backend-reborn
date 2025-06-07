@@ -10,7 +10,7 @@ import verifyToken from './middlewares/VerivyToken.js';
 import verifyRole from './middlewares/VerifyRole.js';
 import optionsSwagger from './utils/swagger.js';
 
-import createModel from './models/ModelUsers.js';
+// import createModel from './models/ModelUsers.js';
 
 // Functions
 import db from './configs/Database.js';
@@ -42,14 +42,14 @@ const specs = swaggerJSDoc(optionsSwagger);
 try {
   await db.authenticate();
   console.log('Database connected');
-  // await db.sync({ alter: true });
+  await db.sync({ alter: true });
   // createModel.sync({ alter: true });
 } catch (error) {
   console.log(error);
 }
 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
+  windowMs: 1000,
   max: 200,
   message: 'Melebihi batas request ke server.',
 });
