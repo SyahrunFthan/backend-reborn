@@ -5,6 +5,7 @@ import {
   login,
   loginWeb,
   logout,
+  refreshTokenAuth,
   register,
   removeToken,
   sendOtpToEmail,
@@ -18,6 +19,8 @@ import {
 import verifyToken from '../middlewares/VerivyToken.js';
 
 const router = express.Router();
+
+router.get('/refresh-token', refreshTokenAuth);
 
 /**
  * @swagger
@@ -184,6 +187,6 @@ router.post('/register', validateData(registerSchema), register);
  */
 router.post('/check-nik', validateData(checkNikSchema), checkNikForRegister);
 router.delete('/logout', verifyToken, logout);
-router.delete('/remove-token/:id', removeToken, logout);
+router.delete('/remove-token/:id', removeToken);
 
 export default router;

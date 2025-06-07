@@ -153,10 +153,9 @@ export const loginWeb = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const encryptUsername = encrypt(username);
     const user = await Users.findOne({
       where: {
-        username: encryptUsername,
+        username: username,
       },
       include: {
         model: Roles,
@@ -166,19 +165,29 @@ export const loginWeb = async (req, res) => {
     });
 
     if (!user)
+      return res.status(400).json({ username: 'Akun anda tidak ditemukan!' });
+
+    if (user.roles.role_key !== 'admin')
       return res.status(400).json({ email: 'Akun anda tidak ditemukan!' });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(400).json({ password: 'Password anda salah!' });
 
-    const token = jwt.sign(
+    const accessToken = jwt.sign(
       { userId: user.uuid },
       process.env.ACCESS_SECRET_TOKEN,
+      { expiresIn: '15s' }
+    );
+
+    const refreshToken = jwt.sign(
+      { userId: user.uuid },
+      process.env.REFRESH_SECRET_TOKEN,
       { expiresIn: '24h' }
     );
 
-    await Users.update({ token }, { where: { uuid: user.uuid } });
+    await Users.update({ token: refreshToken }, { where: { uuid: user.uuid } });
+
     const dataForClient = {
       userId: user.uuid,
       email: user.email,
@@ -187,19 +196,72 @@ export const loginWeb = async (req, res) => {
       role: user.roles.role_key,
     };
 
-    res.cookie('token', token, {
+    res.cookie('token', refreshToken, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
-      secure: false, // if https then true
+      secure: false,
     });
 
-    return res.status(200).json({ dataForClient, token });
+    return res.status(200).json({ dataForClient, accessToken });
   } catch (error) {
     return res.status(500).json(error);
   }
 };
 
-// Logout User For Mobile (Bug)
+export const refreshTokenAuth = async (req, res) => {
+  try {
+    const refreshToken = req.cookies.token;
+    if (!refreshToken) return res.sendStatus(401);
+
+    const user = await Users.findOne({
+      where: {
+        token: refreshToken,
+      },
+      include: {
+        model: Roles,
+        as: 'roles',
+        foreignKey: 'role_id',
+      },
+    });
+
+    if (!user) return res.sendStatus(401);
+
+    jwt.verify(
+      refreshToken,
+      process.env.REFRESH_SECRET_TOKEN,
+      (err, decoded) => {
+        if (err) return res.sendStatus(403);
+
+        const userId = decoded.userId;
+
+        const accessToken = jwt.sign(
+          { userId },
+          process.env.ACCESS_SECRET_TOKEN,
+          {
+            expiresIn: '15s',
+          }
+        );
+
+        const dataForClient = {
+          userId: user.uuid,
+          email: user.email,
+          username: user.username,
+          fullname: user.fullname,
+          role: user.roles?.role_key,
+        };
+
+        return res.status(200).json({ dataForClient, token: accessToken });
+      }
+    );
+  } catch (error) {
+    console.error('Error in refreshTokenAuth:', error);
+    return res
+      .status(500)
+      .json({ message: 'Server error', detail: error.message });
+  }
+};
+
+// Logout User For Mobile & Website
 export const logout = async (req, res) => {
   const { userId } = req;
 
@@ -219,8 +281,13 @@ export const removeToken = async (req, res) => {
     const { id } = req.params;
 
     await Users.update({ token: null }, { where: { uuid: id } });
-    res.clearCookie('token');
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: false,
+    });
 
     return res.status(200).json({ message: 'Token berhasil dihapus!' });
-  } catch (error) {}
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 };

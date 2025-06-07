@@ -5,6 +5,7 @@ import {
   deleteResidents,
   getResidents,
   getResidentsById,
+  getRegionForm,
 } from '../controllers/Residents.js';
 import validateData from '../middlewares/Validation.js';
 import { schemaResidents } from '../validations/SchemaResidents.js';
@@ -13,7 +14,8 @@ import verifyRole from '../middlewares/VerifyRole.js';
 
 const router = express.Router();
 
-router.get('/', getResidents);
+router.get('/', verifyToken, verifyRole(['admin']), getResidents);
+router.get('/region', verifyToken, verifyRole(['admin']), getRegionForm);
 router.get('/:id', getResidentsById);
 router.post(
   '/create',

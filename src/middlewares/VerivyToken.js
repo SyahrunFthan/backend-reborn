@@ -12,28 +12,23 @@ const verifyToken = async (req, res, next) => {
 
     if (!token) return res.status(401).json({ message: 'Token not found!' });
 
-    const user = await Users.findOne({
-      where: { token },
-      include: {
-        model: Roles,
-        as: 'roles',
-        foreignKey: 'role_id',
-      },
-    });
-
-    if (!user) return res.status(401).json({ message: 'Invalid token!' });
-
     jwt.verify(token, process.env.ACCESS_SECRET_TOKEN, async (err, decoded) => {
       if (err) {
-        await Users.update({ token: null }, { where: { uuid: user.uuid } });
-
-        res.clearCookie('token');
-        return res
-          .status(403)
-          .json({ message: 'Invalid token or expired token' });
+        return res.sendStatus(403);
       }
 
       req.userId = decoded.userId;
+
+      const user = await Users.findOne({
+        where: {
+          uuid: decoded?.userId,
+        },
+        include: {
+          model: Roles,
+          as: 'roles',
+          foreignKey: 'role_id',
+        },
+      });
       req.role = user.roles.role_key;
       req.name = user.fullname;
 
