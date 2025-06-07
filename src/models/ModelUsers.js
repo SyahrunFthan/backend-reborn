@@ -62,7 +62,7 @@ Users.belongsTo(Roles, {
 Users.belongsTo(Residents, {
   foreignKey: 'resident_id',
   as: 'resident',
-  onDelete: 'restrict',
+  onDelete: 'cascade',
 });
 
 export default Users;
