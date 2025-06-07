@@ -5,6 +5,7 @@ import Residents from '../models/ModelResidents.js';
 import decrypt from '../utils/decryption.js';
 import encrypt from '../utils/encryption.js';
 import path from 'path';
+import fs from 'fs';
 
 // Admin & Fix
 export const getRegionForm = async (req, res) => {
@@ -334,9 +335,10 @@ export const deleteResidents = async (req, res) => {
   if (!resident) {
     return res.status(404).json({ message: 'Penduduk tidak ditemukan' });
   }
-
+  if (resident.image !== null) {
+    fs.unlinkSync(`public/residents/${resident.image}`);
+  }
   try {
-    // Hapus data penduduk
     await resident.destroy();
 
     return res.status(200).json({ message: 'Data penduduk berhasil dihapus' });
