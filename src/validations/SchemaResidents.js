@@ -10,16 +10,18 @@ const schemaResidents = z.object({
   date_birth: z
     .string()
     .nonempty({ message: 'Tanggal lahir tidak boleh kosong!' }),
-  // date_birth: z.date().refine((date) => date <= new Date(), {
-  //   message: "Tanggal lahir tidak boleh di masa depan!",
-  // }),
   gender: z.enum(['L', 'P'], { message: "Gender harus 'L' atau 'P'!" }),
-  status: z.string().nonempty({ message: 'Status tidak boleh kosong!' }),
+  status: z
+    .string()
+    .nonempty({ message: 'Status pernikahan tidak boleh kosong!' }),
   religion: z.string().nonempty({ message: 'Agama tidak boleh kosong!' }),
   education: z.string().nonempty({ message: 'Pendidikan tidak boleh kosong!' }),
   work: z.string().nonempty({ message: 'Pekerjaan tidak boleh kosong!' }),
   age: z.string().nonempty({ message: 'Usia tidak boleh kosong!' }),
-  region_id: z.string().nonempty({ message: 'id region tidak boleh kosong!' }),
+  citizen_status: z
+    .string()
+    .nonempty({ message: 'Status penduduk tidak boleh kosong!' }),
+  address: z.string().nonempty({ message: 'Alamat tidak boleh kosong!' }),
 });
 
 export { schemaResidents };

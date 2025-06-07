@@ -31,7 +31,7 @@ const Residents = db.define(
       type: DataTypes.STRING,
     },
     date_birth: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
     },
     gender: {
       type: DataTypes.ENUM('L', 'P'),
@@ -58,8 +58,14 @@ const Residents = db.define(
     rt_rw_id: {
       type: DataTypes.STRING,
     },
-    region_id: {
+    image: {
       type: DataTypes.STRING,
+    },
+    path_image: {
+      type: DataTypes.STRING,
+    },
+    address: {
+      type: DataTypes.TEXT,
     },
     created_by: {
       type: DataTypes.STRING,

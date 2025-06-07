@@ -18,10 +18,10 @@ const CitizensAssocation = db.define(
       type: DataTypes.STRING,
     },
     rt_number: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.CHAR(10),
     },
     rw_number: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.CHAR(10),
     },
     rt_leader: {
       type: DataTypes.STRING,

@@ -1,27 +1,51 @@
+import { Op } from 'sequelize';
 import CitizensAssocation from '../models/ModelCitizensAssocation.js';
 import Region from '../models/ModelRegion.js';
 import Residents from '../models/ModelResidents.js';
+import decrypt from '../utils/decryption.js';
 import encrypt from '../utils/encryption.js';
-import descrypt from '../utils/decryption.js';
+import path from 'path';
 
-// Admin & User
+// Admin & Fix
+export const getRegionForm = async (req, res) => {
+  try {
+    const citizensAssociation = await CitizensAssocation.findAll({
+      attributes: ['uuid', 'rt_number', 'rw_number', 'region_id'],
+      include: [
+        {
+          model: Region,
+          as: 'region',
+          foreignKey: 'region_id',
+          attributes: ['uuid', 'name'],
+        },
+      ],
+    });
+
+    return res.status(200).json({ response: citizensAssociation });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+
+// Admin
 export const getResidents = async (req, res) => {
   try {
-    const response = await Residents.findAll({
+    const search = req.query.search || '';
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
+
+    const { rows: residents, count } = await Residents.findAndCountAll({
       attributes: [
         'uuid',
         'name',
         'nik',
-        'no_kk',
         'place_birth',
         'date_birth',
         'gender',
-        'status_married',
-        'religion',
-        'education',
-        'work',
-        'age',
         'citizen_status',
+        'region_id',
+        'rt_rw_id',
       ],
       include: [
         {
@@ -35,9 +59,36 @@ export const getResidents = async (req, res) => {
           attributes: ['name'],
         },
       ],
+      offset: offset,
+      limit: limit,
+      where: {
+        [Op.or]: [
+          {
+            name: {
+              [Op.like]: `%${search}%`,
+            },
+          },
+          {
+            nik: {
+              [Op.like]: `%${encrypt(search)}%`,
+            },
+          },
+        ],
+      },
     });
 
-    return res.status(200).json({ response });
+    const response = residents.map((item, index) => {
+      const data = item.get({ plain: true });
+      return {
+        ...data,
+        key: index,
+        nik: decrypt(data.nik),
+      };
+    });
+
+    const totalPage = Math.ceil(count / limit);
+
+    return res.status(200).json({ response, totalPage, totalRow: count });
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -81,7 +132,7 @@ export const getResidentsById = async (req, res) => {
     return res.status(500).json(500);
   }
 };
-// Admin
+// Admin & Fix
 export const createResidents = async (req, res) => {
   const {
     nik,
@@ -98,23 +149,44 @@ export const createResidents = async (req, res) => {
     citizen_status,
     rt_rw_id,
     region_id,
+    address,
   } = req.body;
   const { name } = req;
 
+  const encryptNik = encrypt(String(nik));
+  const encryptKK = encrypt(String(no_kk));
+
   const checkResidents = await Residents.findOne({
     where: {
-      nik: nik,
+      nik: encryptNik,
     },
   });
 
   if (checkResidents) {
     return res
-      .status(401)
-      .json({ message: 'nik sudah terdatar di table penduduk' });
+      .status(409)
+      .json({ message: 'Nik sudah terdatar di tabel penduduk' });
   }
 
-  const encryptNik = encrypt(nik);
-  const encryptKK = encrypt(no_kk);
+  if (!req.files)
+    return res.status(422).json({ message: 'Gambar harus diisi.' });
+
+  const file = req.files.file;
+  const filesize = file.data.length;
+  const ext = path.extname(file.name);
+  const allowedTypes = ['.png', '.jpg', '.jpeg'];
+  const filename = Date.now() + ext;
+
+  if (!allowedTypes.includes(ext.toLowerCase()))
+    return res.status(422).json({ message: 'File harus berupa gambar' });
+  if (filesize > 3000000)
+    return res.status(422).json({ message: 'Ukuran gambar terlalu besar' });
+
+  file.mv(`public/residents/${filename}`);
+
+  const pathFile = `${req.protocol}://${req.get(
+    'host'
+  )}/public/residents/${filename}`;
 
   try {
     await Residents.create({
@@ -128,6 +200,9 @@ export const createResidents = async (req, res) => {
       citizen_status,
       rt_rw_id,
       region_id,
+      address,
+      image: filename,
+      path_image: pathFile,
       name: nameResident,
       nik: encryptNik,
       no_kk: encryptKK,
