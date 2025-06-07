@@ -10,7 +10,7 @@ import verifyToken from './middlewares/VerivyToken.js';
 import verifyRole from './middlewares/VerifyRole.js';
 import optionsSwagger from './utils/swagger.js';
 
-import createModel from './models/ModelProfileVillage.js';
+import createModel from './models/ModelUsers.js';
 
 // Functions
 import db from './configs/Database.js';

@@ -218,58 +218,28 @@ export const createResidents = async (req, res) => {
 };
 // Admin
 export const updateResidents = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const {
-      nik,
-      no_kk,
-      place_birth,
-      date_birth,
-      gender,
-      status,
-      religion,
-      education,
-      work,
-      age,
-      citizen_status,
-      rt_rw_id,
-      region_id,
-    } = req.body;
-    const { name } = req;
-
-    const resident = await Residents.findByPk(id);
-
-    if (!resident) {
-      return res.status(404).json({ message: 'Penduduk tidak ditemukan' });
-    }
-
-    await resident.update({
-      nik,
-      no_kk,
-      place_birth,
-      date_birth,
-      gender,
-      status_married: status,
-      religion,
-      education,
-      work,
-      age,
-      citizen_status,
-      rt_rw_id,
-      region_id,
-      updated_by: name,
-    });
-
-    return res
-      .status(200)
-      .json({ message: 'Data penduduk berhasil diperbarui' });
-  } catch (error) {
-    return res.status(500).json({ message: 'Terjadi kesalahan', error });
-  }
-};
-// Admin
-export const deleteResidents = async (req, res) => {
   const { id } = req.params;
+  const {
+    nik,
+    no_kk,
+    name: nameResident,
+    place_birth,
+    date_birth,
+    gender,
+    status,
+    religion,
+    education,
+    work,
+    age,
+    citizen_status,
+    rt_rw_id,
+    region_id,
+    address,
+  } = req.body;
+  const { name } = req;
+
+  const encryptNik = encrypt(String(nik));
+  const encryptKK = encrypt(String(no_kk));
 
   const resident = await Residents.findByPk(id);
 
@@ -277,13 +247,97 @@ export const deleteResidents = async (req, res) => {
     return res.status(404).json({ message: 'Penduduk tidak ditemukan' });
   }
 
+  if (!req.files) {
+    try {
+      await resident.update({
+        nik,
+        no_kk,
+        name: nameResident,
+        place_birth,
+        date_birth,
+        gender,
+        status_married: status,
+        religion,
+        education,
+        work,
+        age,
+        citizen_status,
+        rt_rw_id,
+        region_id,
+        updated_by: name,
+        address,
+      });
+
+      return res
+        .status(200)
+        .json({ message: 'Berhasil Mengubah Data Residents!' });
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  } else {
+    const file = req.files.file;
+    const filesize = file.data.length;
+    const ext = path.extname(file.name);
+    const allowedTypes = ['.png', '.jpg', '.jpeg'];
+    const filename = Date.now() + ext;
+
+    if (!allowedTypes.includes(ext.toLowerCase()))
+      return res.status(422).json({ message: 'File harus berupa gambar' });
+    if (filesize > 3000000)
+      return res.status(422).json({ message: 'Ukuran gambar terlalu besar' });
+
+    file.mv(`public/residents/${filename}`);
+
+    const pathFile = `${req.protocol}://${req.get(
+      'host'
+    )}/public/residents/${filename}`;
+    try {
+      await resident.update({
+        place_birth,
+        date_birth,
+        gender,
+        religion,
+        education,
+        work,
+        age,
+        citizen_status,
+        rt_rw_id,
+        region_id,
+        address,
+        image: filename,
+        path_image: pathFile,
+        name: nameResident,
+        nik: encryptNik,
+        no_kk: encryptKK,
+        status_married: status,
+        created_by: name,
+      });
+
+      return res
+        .status(200)
+        .json({ message: 'Berhasil Mengubah Data Resident!' });
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  }
+};
+// Admin
+export const deleteResidents = async (req, res) => {
+  const { id } = req.params;
+
+  const resident = await Residents.findOne({
+    where: {
+      uuid: id,
+    },
+  });
+
+  if (!resident) {
+    return res.status(404).json({ message: 'Penduduk tidak ditemukan' });
+  }
+
   try {
     // Hapus data penduduk
-    await resident.destroy({
-      where: {
-        uuid: id,
-      },
-    });
+    await resident.destroy();
 
     return res.status(200).json({ message: 'Data penduduk berhasil dihapus' });
   } catch (error) {
