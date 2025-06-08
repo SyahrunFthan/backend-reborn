@@ -167,18 +167,31 @@ export const updateNews = async (req, res) => {
 export const deleteNews = async (req, res) => {
   const { id } = req.params;
 
-  const news = await News.findByPk(id);
-
-  if (news.img !== null) {
-    fs.unlinkSync(`public/news/${news.img}`);
-  }
-
   try {
-    await News.destroy({
+    const newsFile = await NewsFile.findAll({
       where: {
-        uuid: id,
+        news_id: id,
       },
     });
+
+    for (const file of newsFile) {
+      if (file.img) {
+        fs.unlinkSync(`public/news/${file.img}`);
+      }
+    }
+
+    const news = await News.findByPk(id);
+    if (!news) {
+      return res.status(404).json({ message: 'Berita tidak ditemukan!' });
+    }
+
+    await NewsFile.destroy({
+      where: {
+        news_id: id,
+      },
+    });
+
+    await news.destroy();
 
     return res.status(200).json({ message: 'berhasil menghapus news!' });
   } catch (error) {
