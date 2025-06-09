@@ -26,8 +26,7 @@ export const getRegionForm = async (req, res) => {
     return res.status(500).json(error);
   }
 };
-
-// Admin
+// Admin & Fix
 export const getResidents = async (req, res) => {
   try {
     const search = req.query.search || '';

@@ -1,0 +1,12 @@
+POST http://localhost:5001/auth/register
+Content-Type: application/json
+
+{
+    "username": "727317312",
+    "password": "@Admin789",
+    "confirmPassword": "@Admin789",
+    "fullname": "Administrator",
+    "email": "admin@localhost.com",
+    "phone": "1234567890",
+    "role_id": 2
+}

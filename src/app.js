@@ -10,7 +10,7 @@ import verifyToken from './middlewares/VerivyToken.js';
 import verifyRole from './middlewares/VerifyRole.js';
 import optionsSwagger from './utils/swagger.js';
 
-import createModel from './models/ModelUsers.js';
+// import createModel from './models/ModelUsers.js';
 
 // Functions
 import db from './configs/Database.js';
@@ -28,12 +28,6 @@ import RouteCitizenAssociation from './routers/RouteCitizenAssociation.js';
 import RouteRegion from './routers/RouteRegion.js';
 import RouteSubmissionService from './routers/RouteSubmissionService.js';
 import RouteProfileVillage from './routers/RouteProfileVillage.js';
-
-// import { readFile } from 'fs/promises';
-
-// const apiDocs = JSON.parse(
-//   await readFile(new URL('../api-docs.json', import.meta.url))
-// );
 
 dotenv.config();
 
