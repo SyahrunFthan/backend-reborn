@@ -3,7 +3,7 @@ import {
   createRegion,
   deleteRegion,
   getRegion,
-  getRegionById,
+  getRegionAndVillage,
   updateRegion,
 } from '../controllers/Region.js';
 import validateData from '../middlewares/Validation.js';
@@ -14,7 +14,12 @@ import { schemaRegion } from '../validations/SchemaRegion.js';
 const router = express.Router();
 
 router.get('/', verifyToken, verifyRole(['admin', 'user']), getRegion);
-router.get('/:id', getRegionById);
+router.get(
+  '/village',
+  verifyToken,
+  verifyRole(['admin', 'user']),
+  getRegionAndVillage
+);
 router.post(
   '/create',
   verifyToken,

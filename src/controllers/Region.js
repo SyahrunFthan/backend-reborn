@@ -5,8 +5,78 @@ import Residents from '../models/ModelResidents.js';
 import ProfileVillage from '../models/ModelProfileVillage.js';
 import Aparatus from '../models/ModelAparatus.js';
 
-// all role
+// All Role
 export const getRegion = async (req, res) => {
+  try {
+    const response = await Region.findAll({
+      attributes: [
+        'uuid',
+        'name',
+        'leader_id',
+        'total_population',
+        'hectare_area',
+        'geo_polygon',
+        'centroid_lat',
+        'centroid_long',
+        'map_color',
+        [
+          Sequelize.fn(
+            'COUNT',
+            Sequelize.fn(
+              'DISTINCT',
+              Sequelize.col('citizens_assocation.rt_number')
+            )
+          ),
+          'total_rt',
+        ],
+        [
+          Sequelize.fn(
+            'COUNT',
+            Sequelize.fn(
+              'DISTINCT',
+              Sequelize.col('citizens_assocation.rw_number')
+            )
+          ),
+          'total_rw',
+        ],
+        [
+          Sequelize.fn(
+            'COUNT',
+            Sequelize.fn('DISTINCT', Sequelize.col('residents.region_id'))
+          ),
+          'total_population_region',
+        ],
+      ],
+      include: [
+        {
+          model: CitizensAssocation,
+          as: 'citizens_assocation',
+          foreignKey: 'region_id',
+          attributes: [],
+        },
+        {
+          model: Residents,
+          as: 'residents',
+          foreignKey: 'region_id',
+          attributes: [],
+        },
+        {
+          model: Aparatus,
+          as: 'leader',
+          foreignKey: 'leader_id',
+          attributes: ['uuid', 'name', 'position', 'path_img'],
+        },
+      ],
+      group: ['regions.uuid'],
+    });
+
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+// all role
+export const getRegionAndVillage = async (req, res) => {
   try {
     const response = await Region.findAll({
       attributes: [
@@ -80,30 +150,6 @@ export const getRegion = async (req, res) => {
   }
 };
 
-// all role
-export const getRegionById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const response = await Region.findByPk(id, {
-      attributes: [
-        'uuid',
-        'name',
-        'leader_id',
-        'total_population',
-        'hectare_area',
-        'geo_polygon',
-        'centroid_lat',
-        'centroid_long',
-        'map_color',
-      ],
-    });
-
-    return res.status(200).json({ response });
-  } catch (error) {
-    return res.status(500).json(error);
-  }
-};
-
 // Admin
 export const createRegion = async (req, res) => {
   const {
@@ -117,6 +163,17 @@ export const createRegion = async (req, res) => {
     leader_id,
   } = req.body;
   const { name } = req;
+
+  const checkLeader = await Region.findAll({
+    where: {
+      leader_id,
+    },
+  });
+
+  if (checkLeader.length > 0)
+    return res
+      .status(409)
+      .json({ message: 'Kepala dusun ini sudah memiliki dusun.' });
 
   try {
     await Region.create({

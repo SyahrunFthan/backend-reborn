@@ -141,7 +141,7 @@ export const updateNews = async (req, res) => {
         }
 
         const filename = Date.now() + ext;
-        await file.mv(`public/News/${filename}`);
+        file.mv(`public/News/${filename}`);
 
         selectedImages.push(filename);
 

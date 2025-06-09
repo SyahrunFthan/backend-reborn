@@ -29,12 +29,6 @@ import RouteRegion from './routers/RouteRegion.js';
 import RouteSubmissionService from './routers/RouteSubmissionService.js';
 import RouteProfileVillage from './routers/RouteProfileVillage.js';
 
-// import { readFile } from 'fs/promises';
-
-// const apiDocs = JSON.parse(
-//   await readFile(new URL('../api-docs.json', import.meta.url))
-// );
-
 dotenv.config();
 
 const app = express();
@@ -42,14 +36,14 @@ const specs = swaggerJSDoc(optionsSwagger);
 try {
   await db.authenticate();
   console.log('Database connected');
-  await db.sync({ alter: true });
+  // await db.sync({ alter: true });
   // createModel.sync({ alter: true });
 } catch (error) {
   console.log(error);
 }
 
 const limiter = rateLimit({
-  windowMs: 1000,
+  windowMs: 15 * 60 * 1000,
   max: 200,
   message: 'Melebihi batas request ke server.',
 });
