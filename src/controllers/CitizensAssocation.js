@@ -1,32 +1,71 @@
+import { Op } from 'sequelize';
 import CitizensAssocation from '../models/ModelCitizensAssocation.js';
 import Region from '../models/ModelRegion.js';
 
 // Admin & User
 export const getCitizensAssocation = async (req, res) => {
   try {
-    const response = await CitizensAssocation.findAll({
-      attributes: [
-        'uuid',
-        'rt_number',
-        'rw_number',
-        'rt_leader',
-        'rw_leader',
-        'total_kk',
-        'total_population',
-      ],
-      include: [
-        {
-          model: Region,
-          as: 'region',
-          attributes: ['uuid', 'name'],
+    const search = req.query.search || '';
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
+
+    const { rows: response, count: totalCitizenAssociation } =
+      await CitizensAssocation.findAndCountAll({
+        attributes: [
+          'uuid',
+          'rt_number',
+          'rw_number',
+          'rt_leader',
+          'rw_leader',
+          'total_kk',
+          'total_population',
+          'region_id',
+        ],
+        include: [
+          {
+            model: Region,
+            as: 'region',
+            foreignKey: 'region_id',
+            attributes: ['uuid', 'name'],
+          },
+        ],
+        where: {
+          [Op.or]: [
+            {
+              rt_number: {
+                [Op.like]: `%${search}%`,
+              },
+            },
+            {
+              rt_leader: {
+                [Op.like]: `%${search}%`,
+              },
+            },
+            {
+              rw_leader: {
+                [Op.like]: `%${search}%`,
+              },
+            },
+            {
+              rw_number: {
+                [Op.like]: `%${search}%`,
+              },
+            },
+          ],
         },
-      ],
+        offset: offset,
+        limit: limit,
+      });
+
+    return res.status(200).json({
+      response,
+      pagination: {
+        total: totalCitizenAssociation,
+        page: page,
+        totalPage: Math.ceil(totalCitizenAssociation / limit),
+      },
     });
-
-    if (response.length == 0)
-      return res.status(404).json({ message: 'Data Not Found.' });
-
-    return res.status(200).json({ response });
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -77,6 +116,13 @@ export const createCitizensAssociation = async (req, res) => {
   if (!checkRegion) {
     return res.status(404).json({ message: 'region tidak di temukan!' });
   }
+
+  const checlRtRwRegion = await CitizensAssocation.findAll({
+    where: { rt_number: rt_number, rw_number: rw_number, region_id: region_id },
+  });
+
+  if (checlRtRwRegion.length > 0)
+    return res.status(409).json({ message: 'RT/RW dan Dusun sudah ada.' });
 
   try {
     await CitizensAssocation.create({
