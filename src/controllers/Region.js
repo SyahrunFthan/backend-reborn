@@ -1,14 +1,39 @@
-import { Sequelize } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import CitizensAssocation from '../models/ModelCitizensAssocation.js';
 import Region from '../models/ModelRegion.js';
 import Residents from '../models/ModelResidents.js';
 import ProfileVillage from '../models/ModelProfileVillage.js';
 import Aparatus from '../models/ModelAparatus.js';
 
+// Admin
+export const getRegionForForm = async (req, res) => {
+  try {
+    const response = await Region.findAll({
+      attributes: ['uuid', 'name'],
+    });
+
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
 // All Role
 export const getRegion = async (req, res) => {
   try {
-    const response = await Region.findAll({
+    const search = req.query.search || '';
+    const limit = parseInt(req.query.limit) || 10;
+    const page = parseInt(req.query.page) || 1;
+    const offset = (page - 1) * limit;
+
+    const totalRegions = await Region.count({
+      where: {
+        name: {
+          [Op.like]: `%${search}%`,
+        },
+      },
+    });
+
+    const regions = await Region.findAll({
       attributes: [
         'uuid',
         'name',
@@ -16,8 +41,6 @@ export const getRegion = async (req, res) => {
         'total_population',
         'hectare_area',
         'geo_polygon',
-        'centroid_lat',
-        'centroid_long',
         'map_color',
         [
           Sequelize.fn(
@@ -55,22 +78,36 @@ export const getRegion = async (req, res) => {
           attributes: [],
         },
         {
+          model: Aparatus,
+          as: 'leader',
+          attributes: ['uuid', 'name', 'position', 'path_img'],
+        },
+        {
           model: Residents,
           as: 'residents',
           foreignKey: 'region_id',
           attributes: [],
         },
-        {
-          model: Aparatus,
-          as: 'leader',
-          foreignKey: 'leader_id',
-          attributes: ['uuid', 'name', 'position', 'path_img'],
-        },
       ],
       group: ['regions.uuid'],
+      where: {
+        name: {
+          [Op.like]: `%${search}%`,
+        },
+      },
+      offset: offset,
+      limit: limit,
+      subQuery: false,
     });
 
-    return res.status(200).json(response);
+    return res.status(200).json({
+      data: regions,
+      pagination: {
+        total: totalRegions,
+        page: page,
+        totalPage: Math.ceil(totalRegions / limit),
+      },
+    });
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -86,8 +123,6 @@ export const getRegionAndVillage = async (req, res) => {
         'total_population',
         'hectare_area',
         'geo_polygon',
-        'centroid_lat',
-        'centroid_long',
         'map_color',
         [
           Sequelize.fn(
@@ -157,8 +192,6 @@ export const createRegion = async (req, res) => {
     total_population,
     hectare_area,
     geo_polygon,
-    centroid_lat,
-    centroid_long,
     map_color,
     leader_id,
   } = req.body;
@@ -181,8 +214,6 @@ export const createRegion = async (req, res) => {
       total_population,
       hectare_area,
       geo_polygon,
-      centroid_lat,
-      centroid_long,
       map_color,
       name: nameRegion,
       created_by: name,
@@ -201,8 +232,6 @@ export const updateRegion = async (req, res) => {
     total_population,
     hectare_area,
     geo_polygon,
-    centroid_lat,
-    centroid_long,
     map_color,
     leader_id,
   } = req.body;
@@ -211,6 +240,15 @@ export const updateRegion = async (req, res) => {
 
   const region = await Region.findByPk(id);
 
+  const isUsed = await Region.findOne({
+    where: { leader_id, uuid: { [Op.ne]: id } },
+  });
+
+  if (isUsed)
+    return res.status(409).json({
+      message: 'Aparatur ini sudah digunakan sebagai pemimpin wilayah lain',
+    });
+
   try {
     await region.update({
       name: nameRegion,
@@ -218,8 +256,6 @@ export const updateRegion = async (req, res) => {
       total_population,
       hectare_area,
       geo_polygon,
-      centroid_lat,
-      centroid_long,
       map_color,
       updated_by: name,
     });

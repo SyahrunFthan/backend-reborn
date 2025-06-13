@@ -20,7 +20,6 @@ const Region = db.define(
     },
     leader_id: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     total_population: {
       type: DataTypes.INTEGER,
@@ -30,12 +29,6 @@ const Region = db.define(
     },
     geo_polygon: {
       type: DataTypes.TEXT,
-    },
-    centroid_lat: {
-      type: DataTypes.STRING,
-    },
-    centroid_long: {
-      type: DataTypes.STRING,
     },
     map_color: {
       type: DataTypes.STRING(20),

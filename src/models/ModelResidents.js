@@ -58,6 +58,9 @@ const Residents = db.define(
     rt_rw_id: {
       type: DataTypes.STRING,
     },
+    region_id: {
+      type: DataTypes.STRING,
+    },
     image: {
       type: DataTypes.STRING,
     },
