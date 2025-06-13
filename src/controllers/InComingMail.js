@@ -1,40 +1,77 @@
 import InComingMail from '../models/ModelInComingMails.js';
-import Users from '../models/ModelUsers.js';
 import path from 'path';
 import fs from 'fs';
+import { Op } from 'sequelize';
 
 // Admin & User
 export const getIncomingMails = async (req, res) => {
   try {
-    const response = await InComingMail.findAll({
-      attributes: [
-        'uuid',
-        'reference_number',
-        'date_latter',
-        'date_received',
-        'sender',
-        'regarding',
-        'summary',
-        'letter_file',
-        'path_file',
-        'created_by',
-        'updated_by',
-      ],
-      include: [
-        {
-          model: Users,
-          as: 'creator',
-          attributes: ['uuid', 'fullname'],
-        },
-        {
-          model: Users,
-          as: 'updater',
-          attributes: ['uuid', 'fullname'],
-        },
-      ],
+    const search = req.query.search || '';
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const filter = req.query.filter || '';
+    const offset = (page - 1) * limit;
+
+    const whereClause = {
+      reference_number: {
+        [Op.like]: `%${search}%`,
+      },
+    };
+
+    if (filter !== '') {
+      whereClause.status_latter = filter;
+    }
+
+    const { rows: response, count: totalRows } =
+      await InComingMail.findAndCountAll({
+        attributes: [
+          'uuid',
+          'reference_number',
+          'date_latter',
+          'date_received',
+          'sender',
+          'regarding',
+          'summary',
+          'letter_file',
+          'path_file',
+          'created_by',
+          'updated_by',
+          'status_latter',
+        ],
+        offset,
+        limit,
+        where: whereClause,
+      });
+
+    const totalMail = await InComingMail.count();
+
+    const totalRead = await InComingMail.count({
+      where: {
+        status_latter: 'Sudah Dibaca',
+      },
     });
 
-    return res.status(200).json(response);
+    const totalUnRead = await InComingMail.count({
+      where: {
+        status_latter: 'Belum Dibaca',
+      },
+    });
+
+    const totalProcess = await InComingMail.count({
+      where: {
+        status_latter: 'Proses',
+      },
+    });
+
+    return res.status(200).json({
+      response,
+      totalRows,
+      page,
+      totalProcess,
+      totalUnRead,
+      totalRead,
+      totalMail,
+    });
   } catch (error) {
     return res
       .status(500)
@@ -60,18 +97,7 @@ export const getIncomingMailId = async (req, res) => {
         'path_file',
         'created_by',
         'updated_by',
-      ],
-      include: [
-        {
-          model: Users,
-          as: 'creator',
-          attributes: ['uuid', 'fullname'],
-        },
-        {
-          model: Users,
-          as: 'updater',
-          attributes: ['uuid', 'fullname'],
-        },
+        'status_latter',
       ],
     });
 
@@ -95,8 +121,9 @@ export const createIncomingMail = async (req, res) => {
     sender,
     regarding,
     summary,
+    status_latter,
   } = req.body;
-  const { userId } = req;
+  const { name } = req;
 
   const incomingMail = await InComingMail.findAll({
     where: { reference_number },
@@ -132,26 +159,24 @@ export const createIncomingMail = async (req, res) => {
 
     file.mv(`public/surat-masuk/${fileName}`);
 
-    await IncomingMails.create({
+    await InComingMail.create({
       reference_number,
       date_latter,
       date_received,
       sender,
       regarding,
       summary,
+      status_latter,
       path_file: pathFile,
       letter_file: fileName,
-      created_by: userId,
+      created_by: name,
     });
 
     return res
       .status(201)
       .json({ message: 'Surat masuk berhasil ditambahkan.' });
   } catch (error) {
-    return res.status(500).json({
-      message: 'Terjadi kesalahan saat menyimpan surat masuk.',
-      error,
-    });
+    return res.status(500).json(error);
   }
 };
 
@@ -165,8 +190,9 @@ export const updateIncomingMail = async (req, res) => {
     sender,
     regarding,
     summary,
+    status_latter,
   } = req.body;
-  const { userId } = req;
+  const { name } = req;
 
   if (req.files) {
     try {
@@ -206,9 +232,10 @@ export const updateIncomingMail = async (req, res) => {
           sender,
           regarding,
           summary,
+          status_latter,
           path_file: pathFile,
           letter_file: fileName,
-          updated_by: userId,
+          updated_by: name,
         },
         {
           where: {
@@ -234,7 +261,8 @@ export const updateIncomingMail = async (req, res) => {
           sender,
           regarding,
           summary,
-          updated_by: userId,
+          status_latter,
+          updated_by: name,
         },
         {
           where: {

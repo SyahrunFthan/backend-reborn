@@ -161,10 +161,22 @@ export const updateCitizenAssociation = async (req, res) => {
   const citizensAssocation = await CitizensAssocation.findByPk(id);
 
   if (!citizensAssocation) {
-    return res
-      .status(404)
-      .json({ message: 'data citizen association tidak di temukan!' });
+    return res.status(404).json({ message: 'Data RT/RW tidak di temukan!' });
   }
+
+  const isUsed = await CitizensAssocation.findOne({
+    where: {
+      rt_number: rt_number,
+      rw_number: rw_number,
+      region_id: region_id,
+      uuid: { [Op.ne]: id },
+    },
+  });
+
+  if (isUsed)
+    return res.status(409).json({
+      message: 'Dusun sudah digunakan.',
+    });
 
   try {
     await citizensAssocation.update({

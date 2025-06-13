@@ -40,12 +40,21 @@ export const getResidents = async (req, res) => {
         'uuid',
         'name',
         'nik',
+        'no_kk',
         'place_birth',
         'date_birth',
         'gender',
         'citizen_status',
         'region_id',
         'rt_rw_id',
+        'address',
+        'image',
+        'path_image',
+        'education',
+        'religion',
+        'work',
+        'age',
+        'status_married',
       ],
       include: [
         {
@@ -83,6 +92,7 @@ export const getResidents = async (req, res) => {
         ...data,
         key: index,
         nik: decrypt(data.nik),
+        no_kk: decrypt(data.no_kk),
       };
     });
 
@@ -238,8 +248,8 @@ export const updateResidents = async (req, res) => {
   } = req.body;
   const { name } = req;
 
-  const encryptNik = encrypt(String(nik));
-  const encryptKK = encrypt(String(no_kk));
+  const encryptNik = encrypt(nik);
+  const encryptKK = encrypt(no_kk);
 
   const resident = await Residents.findByPk(id);
 
@@ -250,22 +260,22 @@ export const updateResidents = async (req, res) => {
   if (!req.files) {
     try {
       await resident.update({
-        nik,
-        no_kk,
-        name: nameResident,
+        address,
         place_birth,
         date_birth,
         gender,
-        status_married: status,
+        age,
         religion,
         education,
         work,
-        age,
         citizen_status,
         rt_rw_id,
         region_id,
+        nik: encryptNik,
+        no_kk: encryptKK,
+        name: nameResident,
+        status_married: status,
         updated_by: name,
-        address,
       });
 
       return res
