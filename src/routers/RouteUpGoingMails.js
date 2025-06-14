@@ -13,18 +13,22 @@ import schemaUpGoingMail from '../validations/SchemaUpGoingMail.js';
 
 const router = express.Router();
 
-router.get('/', verifyToken, verifyRole(['admin', 'user'], getUpGoingMails));
-router.get('/', verifyToken, verifyRole(['admin'], getUpGoingMailId));
+router.get('/', verifyToken, verifyRole(['admin']), getUpGoingMails);
+router.get('/', verifyToken, verifyRole(['admin']), getUpGoingMailId);
 router.post(
   '/',
   verifyToken,
-  verifyRole(['admin'], validateData(schemaUpGoingMail), createUpGoingMail)
+  verifyRole(['admin']),
+  validateData(schemaUpGoingMail),
+  createUpGoingMail
 );
 router.patch(
   '/',
   verifyToken,
-  verifyRole(['admin'], validateData(schemaUpGoingMail), updateUpGoingMail)
+  verifyRole(['admin']),
+  validateData(schemaUpGoingMail),
+  updateUpGoingMail
 );
-router.delete('/', verifyToken, verifyRole(['admin'], deleteUpGoingMail));
+router.delete('/:id', verifyToken, verifyRole(['admin']), deleteUpGoingMail);
 
 export default router;

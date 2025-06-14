@@ -39,6 +39,10 @@ const UpGoingMail = db.define(
     path_file: {
       type: DataTypes.STRING,
     },
+    status_latter: {
+      type: DataTypes.ENUM('Draft', 'Terkirim', 'Dalam Proses'),
+      defaultValue: 'Draft',
+    },
     created_by: {
       type: DataTypes.STRING,
       allowNull: false,

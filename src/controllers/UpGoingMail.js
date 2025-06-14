@@ -1,37 +1,71 @@
+import { Op } from 'sequelize';
 import UpGoingMail from '../models/ModelUpGoingMails.js';
 import Users from '../models/ModelUsers.js';
+import path from 'path';
 
 // Admin & User
 export const getUpGoingMails = async (req, res) => {
   try {
-    const response = await UpGoingMail.findAll({
-      attributes: [
-        'reference_number',
-        'date_latter',
-        'objective',
-        'regarding',
-        'summary',
-        'path_file',
-        'created_by',
-        'updated_by',
-      ],
-      include: [
-        {
-          model: Users,
-          as: 'creator',
-          attributes: ['uuid', 'fullname'],
-        },
-        {
-          model: Users,
-          as: 'updater',
-          attributes: ['uuid', 'fullname'],
-        },
-      ],
-    });
-    if (response.length == 0)
-      return res.status(404).json({ message: 'Tidak ada data surat keluar.' });
+    const search = req.query.search || '';
+    const filter = req.query.filter || '';
+    const limit = parseInt(req.query.limit) || 10;
+    const page = parseInt(req.query.page) || 10;
+    const offset = (page - 1) * limit;
 
-    return res.status(200).json(response);
+    const whereClouse = {
+      reference_number: {
+        [Op.like]: `%${search}%`,
+      },
+    };
+
+    if (filter) {
+      whereClouse.status_latter = filter;
+    }
+
+    const { rows: response, count: totalRows } =
+      await UpGoingMail.findAndCountAll({
+        attributes: [
+          'reference_number',
+          'date_latter',
+          'objective',
+          'regarding',
+          'summary',
+          'path_file',
+          'status_latter',
+          'created_by',
+          'updated_by',
+          'uuid',
+        ],
+        limit: limit,
+        offset: offset,
+        where: whereClouse,
+      });
+
+    const totalSurat = await UpGoingMail.count();
+    const totalDraft = await UpGoingMail.count({
+      where: {
+        status_latter: 'Draft',
+      },
+    });
+    const totalSend = await UpGoingMail.count({
+      where: {
+        status_latter: 'Terkirim',
+      },
+    });
+    const totalProcess = await UpGoingMail.count({
+      where: {
+        status_latter: 'Dalam Proses',
+      },
+    });
+
+    return res.status(200).json({
+      response,
+      totalRows,
+      totalSurat,
+      totalDraft,
+      totalSend,
+      totalProcess,
+    });
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -54,10 +88,15 @@ export const getUpGoingMailId = async (req, res) => {
 
 // Admin
 export const createUpGoingMail = async (req, res) => {
-  const { reference_number, date_letter, objective, regarding, summary } =
-    req.body;
-  const { userId } = req.userId;
-
+  const {
+    reference_number,
+    date_latter,
+    objective,
+    regarding,
+    summary,
+    status_latter,
+  } = req.body;
+  const { name } = req;
   const checkCodeMail = await UpGoingMail.findOne({
     where: { reference_number },
   });
@@ -65,7 +104,6 @@ export const createUpGoingMail = async (req, res) => {
     return res
       .status(400)
       .json({ reference_number: 'Nomor Surat Keluar Sudah Ada' });
-
   if (!req.files)
     return res.status(422).json({ file: 'File surat tidak boleh kosong' });
   try {
@@ -73,17 +111,14 @@ export const createUpGoingMail = async (req, res) => {
     const ext = path.extname(file.name);
     const fileSize = file.data.length;
     const allowedFileTypes = ['.pdf'];
-
     if (!allowedFileTypes.includes(ext.toLowerCase()))
       return res
         .status(422)
         .json({ file: 'Format file tidak didukung, harus PDF.' });
-
     if (fileSize > 3000000)
       return res
         .status(422)
         .json({ file: 'Ukuran file terlalu besar, maksimal 3MB.' });
-
     const fileName = Date.now() + ext;
     const pathFile = `${req.protocol}://${req.get(
       'host'
@@ -93,15 +128,15 @@ export const createUpGoingMail = async (req, res) => {
 
     await UpGoingMail.create({
       reference_number,
-      date_letter,
+      date_latter,
       objective,
       regarding,
       summary,
-      created_by: userId,
+      status_latter,
+      created_by: name,
       letter_file: fileName,
       path_file: pathFile,
     });
-
     return res
       .status(201)
       .json({ message: 'Berhasil menyimpan surat keluar.' });
@@ -112,10 +147,16 @@ export const createUpGoingMail = async (req, res) => {
 
 // Admin
 export const updateUpGoingMail = async (req, res) => {
-  const { reference_number, date_letter, objective, regarding, summary } =
-    req.body;
+  const {
+    reference_number,
+    date_latter,
+    objective,
+    regarding,
+    summary,
+    status_latter,
+  } = req.body;
   const { id } = req.params;
-  const { userId } = req.userId;
+  const { name } = req;
 
   if (req.files) {
     try {
@@ -144,11 +185,12 @@ export const updateUpGoingMail = async (req, res) => {
       await UpGoingMail.update(
         {
           reference_number,
-          date_letter,
+          date_latter,
           objective,
           regarding,
           summary,
-          updated_by: userId,
+          status_latter,
+          updated_by: name,
           letter_file: fileName,
           path_file: pathFile,
         },
@@ -168,11 +210,12 @@ export const updateUpGoingMail = async (req, res) => {
       await UpGoingMail.update(
         {
           reference_number,
-          date_letter,
+          date_latter,
           objective,
           regarding,
           summary,
-          updated_by: userId,
+          status_latter,
+          updated_by: name,
         },
         {
           where: {
@@ -183,6 +226,8 @@ export const updateUpGoingMail = async (req, res) => {
 
       return res.status(200).json({ message: 'Berhasil update surat keluar' });
     } catch (error) {
+      console.log(error);
+
       return res.status(500).json(error);
     }
   }
@@ -193,11 +238,11 @@ export const deleteUpGoingMail = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const response = await UpGoingMail.findByPk(id);
-    if (!response)
+    const goingMail = await UpGoingMail.findByPk(id);
+    if (!goingMail)
       return res.status(404).json({ message: 'Surat Keluar tidak ditemukan.' });
 
-    response.destroy();
+    goingMail.destroy();
 
     return res.status(200).json({ message: 'Surat keluar berhasil dihapus.' });
   } catch (error) {

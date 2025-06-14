@@ -2,7 +2,7 @@ import { DataTypes } from 'sequelize';
 import db from '../configs/Database.js';
 
 const Galeri = db.define(
-  'galeri',
+  'gallery',
   {
     uuid: {
       type: DataTypes.STRING,

@@ -7,7 +7,9 @@ const schemaUpGoingMail = z.object({
   date_latter: z.string().nonempty({ message: 'Inputan tidak boleh kosong.' }),
   objective: z.string().nonempty({ message: 'Inputan tidak boleh kosong.' }),
   regarding: z.string().nonempty({ message: 'Inputan tidak boleh kosong.' }),
-  summary: z.string().nonempty({ message: 'Inputan tidak boleh kosong.' }),
+  status_latter: z
+    .string()
+    .nonempty({ message: 'Inputan tidak boleh kosong.' }),
 });
 
 export default schemaUpGoingMail;

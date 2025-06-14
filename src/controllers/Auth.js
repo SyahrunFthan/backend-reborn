@@ -5,11 +5,9 @@ import Roles from '../models/ModelRoles.js';
 import formatPhoneNumber from '../utils/formatPhone.js';
 import Residents from '../models/ModelResidents.js';
 import encrypt from '../utils/encryption.js';
-import decrypt from '../utils/decryption.js';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 import generateOTP from '../utils/generateOtp.js';
-import { Op } from 'sequelize';
 dotenv.config();
 
 // Mobile
@@ -177,7 +175,7 @@ export const loginWeb = async (req, res) => {
     const accessToken = jwt.sign(
       { userId: user.uuid },
       process.env.ACCESS_SECRET_TOKEN,
-      { expiresIn: '15s' }
+      { expiresIn: '10m' }
     );
 
     const refreshToken = jwt.sign(
@@ -238,7 +236,7 @@ export const refreshTokenAuth = async (req, res) => {
           { userId },
           process.env.ACCESS_SECRET_TOKEN,
           {
-            expiresIn: '15s',
+            expiresIn: '10m',
           }
         );
 
