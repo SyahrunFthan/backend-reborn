@@ -10,7 +10,7 @@ import verifyToken from './middlewares/VerivyToken.js';
 import verifyRole from './middlewares/VerifyRole.js';
 import optionsSwagger from './utils/swagger.js';
 
-import createModel from './models/ModelUsers.js';
+import createModel from './models/ModelGaleri.js';
 
 // Functions
 import db from './configs/Database.js';
@@ -28,6 +28,7 @@ import RouteCitizenAssociation from './routers/RouteCitizenAssociation.js';
 import RouteRegion from './routers/RouteRegion.js';
 import RouteSubmissionService from './routers/RouteSubmissionService.js';
 import RouteProfileVillage from './routers/RouteProfileVillage.js';
+import RouteGaleri from './routers/RouteGaleri.js';
 
 // import { readFile } from 'fs/promises';
 
@@ -82,6 +83,7 @@ app.use('/submission-service', RouteSubmissionService);
 app.use('/citizen-association', RouteCitizenAssociation);
 app.use('/region', RouteRegion);
 app.use('/profile-village', RouteProfileVillage);
+app.use('/galeri', RouteGaleri);
 
 app.use('/', verifyToken, verifyRole(['superadmin', 'admin', 'user']));
 

@@ -13,18 +13,8 @@ export const getService = async (req, res) => {
         'type_service',
         'file',
         'path_file',
-      ],
-      include: [
-        {
-          model: Users,
-          as: 'created',
-          attributes: ['uuid', 'fullname'],
-        },
-        {
-          model: Users,
-          as: 'updated',
-          attributes: ['uuid', 'fullname'],
-        },
+        'created_by',
+        'updated_by',
       ],
     });
 
