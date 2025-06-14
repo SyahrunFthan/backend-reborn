@@ -37,7 +37,7 @@ const specs = swaggerJSDoc(optionsSwagger);
 try {
   await db.authenticate();
   console.log('Database connected');
-  // await db.sync({ alter: true });
+  await db.sync({ alter: true });
   // createModel.sync({ alter: true });
 } catch (error) {
   console.log(error);
