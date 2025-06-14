@@ -37,6 +37,11 @@ const InComingMail = db.define(
     summary: {
       type: DataTypes.TEXT,
     },
+    status_latter: {
+      type: DataTypes.ENUM('Belum Dibaca', 'Sudah Dibaca', 'Proses'),
+      allowNull: false,
+      defaultValue: 'Belum Dibaca',
+    },
     letter_file: {
       type: DataTypes.STRING,
     },
@@ -55,16 +60,5 @@ const InComingMail = db.define(
     freezeTableName: true,
   }
 );
-
-InComingMail.belongsTo(Users, {
-  as: 'creator',
-  foreignKey: 'created_by',
-  onDelete: 'restrict',
-});
-InComingMail.belongsTo(Users, {
-  as: 'updater',
-  foreignKey: 'updated_by',
-  onDelete: 'restrict',
-});
 
 export default InComingMail;

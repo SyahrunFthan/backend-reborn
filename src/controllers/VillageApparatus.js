@@ -3,6 +3,21 @@ import path from 'path';
 import fs from 'fs';
 import encrypt from '../utils/encryption.js';
 
+export const getVillageApparaturForRegionForm = async (req, res) => {
+  try {
+    const response = await VillageApparatus.findAll({
+      attributes: ['uuid', 'name', 'level'],
+      where: {
+        level: 0,
+      },
+    });
+
+    return res.status(200).json({ response });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+
 export const getVillageApparatus = async (req, res) => {
   try {
     const response = await VillageApparatus.findAll({

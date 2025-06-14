@@ -52,15 +52,4 @@ const UpGoingMail = db.define(
   }
 );
 
-UpGoingMail.belongsTo(Users, {
-  as: 'creator',
-  foreignKey: 'created_by',
-  onDelete: 'restrict',
-});
-UpGoingMail.belongsTo(Users, {
-  as: 'updater',
-  foreignKey: 'updated_by',
-  onDelete: 'restrict',
-});
-
 export default UpGoingMail;

@@ -58,6 +58,9 @@ const Residents = db.define(
     rt_rw_id: {
       type: DataTypes.STRING,
     },
+    region_id: {
+      type: DataTypes.STRING,
+    },
     image: {
       type: DataTypes.STRING,
     },
@@ -83,12 +86,12 @@ const Residents = db.define(
 Residents.belongsTo(CitizensAssocation, {
   foreignKey: 'rt_rw_id',
   as: 'rt_rw',
-  onDelete: 'restrict',
+  onDelete: 'set null',
 });
 Residents.belongsTo(Region, {
   foreignKey: 'region_id',
   as: 'region',
-  onDelete: 'restrict',
+  onDelete: 'set null',
 });
 Region.hasMany(Residents, {
   foreignKey: 'region_id',

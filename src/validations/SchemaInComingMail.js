@@ -10,7 +10,9 @@ const schemaInComingMail = z.object({
     .nonempty({ message: 'Inputan tidak boleh kosong.' }),
   sender: z.string().nonempty({ message: 'Inputan tidak boleh kosong.' }),
   regarding: z.string().nonempty({ message: 'Inputan tidak boleh kosong.' }),
-  summary: z.string().nonempty({ message: 'Inputan tidak boleh kosong.' }),
+  status_latter: z
+    .string()
+    .nonempty({ message: 'Inputan tidak boleh kosong.' }),
 });
 
 export default schemaInComingMail;
